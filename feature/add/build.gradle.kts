@@ -4,6 +4,8 @@ import kr.sjh.buildsrc.Libraries
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
+    id("com.google.dagger.hilt.android")
+    id("kotlin-kapt")
 }
 
 android {
@@ -37,7 +39,7 @@ android {
 
 dependencies {
     implementation(project(":domain"))
-    
+
     // AndroidX
     implementation(Libraries.AndroidX.APP_COMPAT)
     implementation(Libraries.AndroidX.MATERIAL)
@@ -51,4 +53,18 @@ dependencies {
 
     // AndroidTest
     androidTestImplementation(Libraries.AndroidTest.ESPRESSO_CORE)
+
+    // di
+    implementation(Libraries.Hilt.HILT_ANDROID)
+    kapt(Libraries.Hilt.HILT_COMPILER)
+
+    //viewmodel
+    implementation(Libraries.AndroidX.LIFECYCLE_VIEWMODEL)
+
+    //livedata
+    implementation(Libraries.AndroidX.LIFECYCLE_LIVEDATA)
+
+    //navigation
+    implementation(Libraries.AndroidX.ACTIVITY_KTX)
+    implementation(Libraries.AndroidX.FRAGMENT_KTX)
 }

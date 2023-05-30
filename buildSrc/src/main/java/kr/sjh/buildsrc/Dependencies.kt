@@ -12,8 +12,13 @@ object Libraries {
         const val ACTIVITY_KTX = "androidx.navigation:navigation-ui-ktx:${Versions.NAVIGATION}"
         const val FRAGMENT_KTX =
             "androidx.navigation:navigation-fragment-ktx:${Versions.NAVIGATION}"
-        const val LIFECYCLE_LIVEDATA = ""
-        const val LIFECYCLE_SCOPE = ""
+        const val LIFECYCLE_LIVEDATA =
+            "androidx.lifecycle:lifecycle-livedata:${Versions.LIFECYCLE_VERSION}"
+        const val LIFECYCLE_VIEWMODEL =
+            "androidx.lifecycle:lifecycle-viewmodel:${Versions.LIFECYCLE_VERSION}"
+
+        const val COROUTINE =
+            "org.jetbrains.kotlinx:kotlinx-coroutines-android:${Versions.COROUTINE}"
     }
 
     object KTX {
@@ -59,4 +64,11 @@ object Versions {
 
     //NAVIGATION
     const val NAVIGATION = "2.5.3"
+
+    //LiveData
+    const val LIFECYCLE_VERSION = "2.5.1"
+
+    //corutine
+    const val COROUTINE = "1.3.9"
+
 }

@@ -40,6 +40,7 @@ android {
 
 dependencies {
     implementation(project(":domain"))
+    implementation(project(":feature:add"))
     // AndroidX
     implementation(Libraries.AndroidX.APP_COMPAT)
     implementation(Libraries.AndroidX.MATERIAL)
@@ -57,4 +58,14 @@ dependencies {
     // di
     implementation(Libraries.Hilt.HILT_ANDROID)
     kapt(Libraries.Hilt.HILT_COMPILER)
+
+    //viewmodel
+    implementation(Libraries.AndroidX.LIFECYCLE_VIEWMODEL)
+
+    //livedata
+    implementation(Libraries.AndroidX.LIFECYCLE_LIVEDATA)
+
+    //navigation
+    implementation(Libraries.AndroidX.ACTIVITY_KTX)
+    implementation(Libraries.AndroidX.FRAGMENT_KTX)
 }

@@ -1,16 +1,21 @@
+import kr.sjh.buildsrc.AppConfig
 import kr.sjh.buildsrc.Libraries
+import kr.sjh.buildsrc.implementation
+
 plugins {
-    id ("com.android.library")
-    id ("org.jetbrains.kotlin.android")
+    id("com.android.library")
+    id("org.jetbrains.kotlin.android")
+    id("com.google.dagger.hilt.android")
+    id("kotlin-kapt")
 }
 
 android {
     namespace = "kr.sjh.data"
-    compileSdk = 33
+    compileSdk = AppConfig.compileSdk
 
     defaultConfig {
-        minSdk = 24
-        targetSdk = 33
+        minSdk = AppConfig.minSdk
+        targetSdk = AppConfig.targetSdk
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -34,18 +39,10 @@ android {
 }
 
 dependencies {
+    implementation(Libraries.roomLibraries)
+    kapt(Libraries.AndroidX.ROOM_KAPT)
 
-    // AndroidX
-    implementation(Libraries.AndroidX.APP_COMPAT)
-    implementation(Libraries.AndroidX.MATERIAL)
-    implementation(Libraries.AndroidX.CONSTRAINT_LAYOUT)
-
-    // KTX
-    implementation(Libraries.KTX.CORE)
-
-    // TEST
-    testImplementation(Libraries.Test.JUNIT)
-
-    // AndroidTest
-    androidTestImplementation(Libraries.AndroidTest.ESPRESSO_CORE)
+    // di
+    implementation(Libraries.Hilt.HILT_ANDROID)
+    kapt(Libraries.Hilt.HILT_COMPILER)
 }

@@ -6,7 +6,7 @@
 
     <fragment
         android:id="@+id/listFragment"
-        android:name="kr.sjh.add.ListFragment"
+        android:name="kr.sjh.list.ListFragment"
         android:label="ListFragment"
-        tools:layout="@layout/fragment_add" />
+        tools:layout="@layout/fragment_list" />
 </navigation>

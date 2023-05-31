@@ -9,9 +9,9 @@ import androidx.fragment.app.viewModels
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class ListFragment : Fragment() {
+class AddFragment : Fragment() {
 
-    private val list: ListViewModel by viewModels()
+    private val list: AddViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,

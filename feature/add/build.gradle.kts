@@ -1,5 +1,6 @@
 import kr.sjh.buildsrc.AppConfig
 import kr.sjh.buildsrc.Libraries
+import kr.sjh.buildsrc.implementation
 
 plugins {
     id("com.android.library")
@@ -28,6 +29,12 @@ android {
             )
         }
     }
+
+    buildFeatures {
+        dataBinding = true
+        viewBinding = true
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
@@ -41,9 +48,7 @@ dependencies {
     implementation(project(":domain"))
 
     // AndroidX
-    implementation(Libraries.AndroidX.APP_COMPAT)
-    implementation(Libraries.AndroidX.MATERIAL)
-    implementation(Libraries.AndroidX.CONSTRAINT_LAYOUT)
+    implementation(Libraries.uiLibraries)
 
     // KTX
     implementation(Libraries.KTX.CORE)
@@ -58,13 +63,9 @@ dependencies {
     implementation(Libraries.Hilt.HILT_ANDROID)
     kapt(Libraries.Hilt.HILT_COMPILER)
 
-    //viewmodel
-    implementation(Libraries.AndroidX.LIFECYCLE_VIEWMODEL)
+    // jetpack(ViewModel, LiveData)
+    implementation(Libraries.jetPackLibraries)
 
-    //livedata
-    implementation(Libraries.AndroidX.LIFECYCLE_LIVEDATA)
-
-    //navigation
-    implementation(Libraries.AndroidX.ACTIVITY_KTX)
-    implementation(Libraries.AndroidX.FRAGMENT_KTX)
+    // navigation
+    implementation(Libraries.navigationLibraries)
 }

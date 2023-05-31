@@ -2,6 +2,7 @@ package kr.sjh.buildsrc
 
 import org.gradle.api.artifacts.dsl.DependencyHandler
 
+
 object Libraries {
 
     object AndroidX {
@@ -19,7 +20,39 @@ object Libraries {
 
         const val COROUTINE =
             "org.jetbrains.kotlinx:kotlinx-coroutines-android:${Versions.COROUTINE}"
+
+        const val ROOM = "androidx.room:room-runtime:${Versions.ROOM}"
+        const val ROOM_KAPT = "androidx.room:room-compiler:${Versions.ROOM}"
     }
+
+    val uiLibraries = arrayListOf<String>().apply {
+        add(AndroidX.APP_COMPAT)
+        add(AndroidX.MATERIAL)
+        add(AndroidX.CONSTRAINT_LAYOUT)
+    }
+
+    val ktxLibraries = arrayListOf<String>().apply {
+        add(KTX.CORE)
+    }
+
+    val navigationLibraries = arrayListOf<String>().apply {
+        add(AndroidX.ACTIVITY_KTX)
+        add(AndroidX.FRAGMENT_KTX)
+    }
+
+    val jetPackLibraries = arrayListOf<String>().apply {
+        add(AndroidX.LIFECYCLE_LIVEDATA)
+        add(AndroidX.LIFECYCLE_VIEWMODEL)
+    }
+
+    val corutineLibraries = arrayListOf<String>().apply {
+        add(AndroidX.COROUTINE)
+    }
+
+    val roomLibraries = arrayListOf<String>().apply {
+        add(AndroidX.ROOM)
+    }
+
 
     object KTX {
         const val CORE = "androidx.core:core-ktx:${Versions.CORE}"
@@ -39,7 +72,11 @@ object Libraries {
     }
 
 
+    const val CALENDAR =
+        "com.kizitonwose.calendar:view:${Versions.CALENDAR}"
+
 }
+
 
 object Versions {
     // AndroidX
@@ -71,4 +108,36 @@ object Versions {
     //corutine
     const val COROUTINE = "1.3.9"
 
+    //room
+    const val ROOM = "2.5.1"
+
+    //kizitonwose
+    const val CALENDAR = "2.3.0"
+
+}
+
+
+//util functions for adding the different type dependencies from build.gradle file
+fun DependencyHandler.kapt(list: List<String>) {
+    list.forEach { dependency ->
+        add("kapt", dependency)
+    }
+}
+
+fun DependencyHandler.implementation(list: List<String>) {
+    list.forEach { dependency ->
+        add("implementation", dependency)
+    }
+}
+
+fun DependencyHandler.androidTestImplementation(list: List<String>) {
+    list.forEach { dependency ->
+        add("androidTestImplementation", dependency)
+    }
+}
+
+fun DependencyHandler.testImplementation(list: List<String>) {
+    list.forEach { dependency ->
+        add("testImplementation", dependency)
+    }
 }

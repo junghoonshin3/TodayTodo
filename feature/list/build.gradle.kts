@@ -1,16 +1,16 @@
+import kr.sjh.buildsrc.implementation
 import kr.sjh.buildsrc.AppConfig
 import kr.sjh.buildsrc.Libraries
 
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
-    id("kotlin-android")
     id("com.google.dagger.hilt.android")
     id("kotlin-kapt")
 }
 
 android {
-    namespace = "kr.sjh.main"
+    namespace = "kr.sjh.list"
     compileSdk = AppConfig.compileSdk
 
     defaultConfig {
@@ -45,14 +45,11 @@ android {
 }
 
 dependencies {
+
     implementation(project(":domain"))
-    implementation(project(":feature:add"))
-    implementation(project(":feature:list"))
 
     // AndroidX
-    implementation(Libraries.AndroidX.APP_COMPAT)
-    implementation(Libraries.AndroidX.MATERIAL)
-    implementation(Libraries.AndroidX.CONSTRAINT_LAYOUT)
+    implementation(Libraries.uiLibraries)
 
     // KTX
     implementation(Libraries.KTX.CORE)
@@ -67,13 +64,12 @@ dependencies {
     implementation(Libraries.Hilt.HILT_ANDROID)
     kapt(Libraries.Hilt.HILT_COMPILER)
 
-    //viewmodel
-    implementation(Libraries.AndroidX.LIFECYCLE_VIEWMODEL)
+    // jetpack(ViewModel, LiveData)
+    implementation(Libraries.jetPackLibraries)
 
-    //livedata
-    implementation(Libraries.AndroidX.LIFECYCLE_LIVEDATA)
+    // navigation
+    implementation(Libraries.navigationLibraries)
 
-    //navigation
-    implementation(Libraries.AndroidX.ACTIVITY_KTX)
-    implementation(Libraries.AndroidX.FRAGMENT_KTX)
+    // horizontalcalendar
+    implementation(Libraries.CALENDAR)
 }

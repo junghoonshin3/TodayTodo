@@ -1,5 +1,6 @@
 import kr.sjh.buildsrc.AppConfig
 import kr.sjh.buildsrc.Libraries
+import kr.sjh.buildsrc.implementation
 
 plugins {
     id("com.android.application")
@@ -47,11 +48,10 @@ dependencies {
     implementation(project(":domain"))
     implementation(project(":feature:main"))
     implementation(project(":feature:add"))
+    implementation(project(":feature:list"))
 
     // AndroidX
-    implementation(Libraries.AndroidX.APP_COMPAT)
-    implementation(Libraries.AndroidX.MATERIAL)
-    implementation(Libraries.AndroidX.CONSTRAINT_LAYOUT)
+    implementation(Libraries.uiLibraries)
 
     // KTX
     implementation(Libraries.KTX.CORE)

@@ -13,16 +13,23 @@ object Libraries {
         const val ACTIVITY_KTX = "androidx.navigation:navigation-ui-ktx:${Versions.NAVIGATION}"
         const val FRAGMENT_KTX =
             "androidx.navigation:navigation-fragment-ktx:${Versions.NAVIGATION}"
+
         const val LIFECYCLE_LIVEDATA =
-            "androidx.lifecycle:lifecycle-livedata:${Versions.LIFECYCLE_VERSION}"
+            "androidx.lifecycle:lifecycle-livedata-ktx:${Versions.LIFECYCLE_VERSION}"
         const val LIFECYCLE_VIEWMODEL =
             "androidx.lifecycle:lifecycle-viewmodel:${Versions.LIFECYCLE_VERSION}"
 
         const val COROUTINE =
             "org.jetbrains.kotlinx:kotlinx-coroutines-android:${Versions.COROUTINE}"
 
-        const val ROOM = "androidx.room:room-runtime:${Versions.ROOM}"
+        const val ROOM_RUNTIME = "androidx.room:room-runtime:${Versions.ROOM}"
+        const val ROOM = "androidx.room:room-ktx:${Versions.ROOM}"
         const val ROOM_KAPT = "androidx.room:room-compiler:${Versions.ROOM}"
+
+    }
+
+    object JavaX {
+        const val INJECT = "javax.inject:javax.inject:1"
     }
 
     val uiLibraries = arrayListOf<String>().apply {
@@ -51,6 +58,7 @@ object Libraries {
 
     val roomLibraries = arrayListOf<String>().apply {
         add(AndroidX.ROOM)
+        add(AndroidX.ROOM_RUNTIME)
     }
 
 

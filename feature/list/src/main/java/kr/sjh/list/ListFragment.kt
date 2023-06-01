@@ -2,6 +2,7 @@ package kr.sjh.list
 
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,12 +17,14 @@ import com.kizitonwose.calendar.core.daysOfWeek
 import com.kizitonwose.calendar.view.ViewContainer
 import com.kizitonwose.calendar.view.WeekCalendarView
 import com.kizitonwose.calendar.view.WeekDayBinder
+import dagger.hilt.android.AndroidEntryPoint
 import kr.sjh.list.databinding.CalendarDayLayoutBinding
 import kr.sjh.list.databinding.FragmentListBinding
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.YearMonth
 
+@AndroidEntryPoint
 class ListFragment : Fragment() {
     companion object {
         fun newInstance() = ListFragment()
@@ -38,7 +41,6 @@ class ListFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
         return inflater.inflate(R.layout.fragment_list, container, false)
     }
 
@@ -52,6 +54,12 @@ class ListFragment : Fragment() {
         val startMonth = currentMonth.minusMonths(100)
         val endMonth = currentMonth.plusMonths(100)
         setupWeekCalendar(startMonth, endMonth, currentMonth, daysOfWeek)
+
+
+        list.todoList.observe(viewLifecycleOwner) {
+            Log.i("sjh", "${it.size}")
+        }
+
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

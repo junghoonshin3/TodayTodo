@@ -39,6 +39,8 @@ android {
 }
 
 dependencies {
+    implementation(project(":domain"))
+
     implementation(Libraries.roomLibraries)
     kapt(Libraries.AndroidX.ROOM_KAPT)
 

@@ -1,4 +1,4 @@
-package kr.sjh.domain.usecase
+package kr.sjh.domain.usecase.list
 
 import kotlinx.coroutines.flow.Flow
 import kr.sjh.domain.model.Todo
@@ -10,5 +10,4 @@ class GetTodoListUseCase @Inject constructor(private val repository: Repository)
     operator fun invoke(date: Int): Flow<List<Todo>> {
         return repository.getAllDailyTodoListByFlow(date)
     }
-
 }

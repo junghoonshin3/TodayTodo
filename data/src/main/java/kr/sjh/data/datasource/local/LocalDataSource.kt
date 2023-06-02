@@ -8,4 +8,10 @@ import javax.inject.Singleton
 
 interface LocalDataSource {
     fun getAllDailyTodoListByFlow(date: Int): Flow<List<TodoEntity>>
+
+    suspend fun insertAllTodo(todoList: List<TodoEntity>)
+
+    suspend fun insertTodo(todo: TodoEntity)
+
+    suspend fun deleteTodo(id: Int)
 }

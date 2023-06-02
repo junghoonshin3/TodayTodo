@@ -6,13 +6,42 @@
     android:layout_height="match_parent"
     tools:context=".ListFragment">
 
-    <com.kizitonwose.calendar.view.WeekCalendarView
-        android:id="@+id/calendarView"
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/tv_calendarYear"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:cv_dayViewResource="@layout/calendar_day_layout"
+        app:layout_constraintBottom_toTopOf="@+id/tv_calendarMonth"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_calendarMonth"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@+id/calendarView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_calendarYear" />
+
+    <com.kizitonwose.calendar.view.WeekCalendarView
+        android:id="@+id/calendarView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:cv_dayViewResource="@layout/calendar_day_layout"
+        app:layout_constraintBottom_toTopOf="@+id/rv_todo_list"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_calendarMonth" />
+    "
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_todo_list"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/calendarView" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

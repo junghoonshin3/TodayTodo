@@ -8,3 +8,12 @@ fun List<TodoEntity>.toTodoList(): List<Todo> {
         Todo(it.id, it.date, it.alaram, it.title, it.when_do, it.category, it.emphasis)
     }
 }
+
+fun List<Todo>.toTodoEntityList(): List<TodoEntity> {
+    return this.map {
+        TodoEntity(it.id, it.date, it.alaram, it.title, it.when_do, it.category, it.emphasis)
+    }
+}
+fun Todo.toTodoEntity(): TodoEntity {
+    return TodoEntity(id, date, alaram, title, when_do, category, emphasis)
+}

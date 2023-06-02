@@ -13,4 +13,16 @@ class DefaultLocalDataSource @Inject constructor(
     override fun getAllDailyTodoListByFlow(date: Int): Flow<List<TodoEntity>> =
         todoDao.getAllDailyTodoListByFlow(date)
 
+    override suspend fun insertAllTodo(todoList: List<TodoEntity>) {
+        todoDao.insertAllTodo(todoList)
+    }
+
+    override suspend fun insertTodo(todo: TodoEntity) {
+        todoDao.insertTodo(todo)
+    }
+
+    override suspend fun deleteTodo(id: Int) {
+        todoDao.deleteTodo(id)
+    }
+
 }

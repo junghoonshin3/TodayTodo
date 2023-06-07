@@ -25,4 +25,8 @@ class DefaultLocalDataSource @Inject constructor(
         todoDao.deleteTodo(id)
     }
 
+    override suspend fun getAllTodoList(today: Boolean, date: Int): List<TodoEntity> {
+        return todoDao.getAllTodoList(today, date)
+    }
+
 }

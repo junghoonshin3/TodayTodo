@@ -2,27 +2,20 @@ package kr.sjh.list
 
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import androidx.annotation.ColorRes
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.kizitonwose.calendar.core.*
-import com.kizitonwose.calendar.view.WeekCalendarView
 import dagger.hilt.android.AndroidEntryPoint
-import kr.sjh.list.calendar.DateClickListener
-import kr.sjh.list.calendar.WeekCalendarObject
+import kr.sjh.list.adapter.RvListAdapter
 import kr.sjh.list.databinding.FragmentListBinding
-import java.time.DayOfWeek
-import java.time.LocalDate
-import java.time.YearMonth
 
 @AndroidEntryPoint
-class ListFragment : Fragment(), DateClickListener {
+class ListFragment : Fragment() {
     companion object {
         fun newInstance() = ListFragment()
     }
@@ -30,9 +23,7 @@ class ListFragment : Fragment(), DateClickListener {
     private val list: ListViewModel by viewModels()
 
     private lateinit var binding: FragmentListBinding
-    private val weekCalendarView: WeekCalendarView get() = binding.calendarView
-    private val selectedDates = mutableSetOf<LocalDate>()
-    lateinit var weekCalendarObject: WeekCalendarObject
+    private lateinit var rvAdapter: RvListAdapter
 
 
     override fun onCreateView(
@@ -46,22 +37,17 @@ class ListFragment : Fragment(), DateClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentListBinding.bind(view)
+        rvAdapter = RvListAdapter()
 
-        val currentMonth = YearMonth.now()
-        val startMonth = currentMonth.minusMonths(100)
-        val endMonth = currentMonth.plusMonths(100)
-        val dayOfWeek = daysOfWeek(firstDayOfWeek = DayOfWeek.SUNDAY)
-
-        weekCalendarObject = WeekCalendarObject(requireContext(), binding, this)
-
-        weekCalendarObject.initWeekCalendar(startMonth, endMonth, currentMonth, dayOfWeek)
+        binding.rvTodoList.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = rvAdapter
+        }
 
         list.todoList.observe(viewLifecycleOwner) {
-            Log.i("sjh", "${it.size}")
+            rvAdapter.submitList(it.toMutableList())
         }
-    }
 
-    override fun onDateClick(date: LocalDate) {
 
     }
 }

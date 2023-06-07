@@ -14,4 +14,6 @@ interface LocalDataSource {
     suspend fun insertTodo(todo: TodoEntity)
 
     suspend fun deleteTodo(id: Int)
+
+    suspend fun getAllTodoList(today: Boolean, date: Int): List<TodoEntity>
 }

@@ -21,4 +21,7 @@ interface TodoDao {
     @Query("DELETE FROM TodoEntity WHERE id = :id")
     suspend fun deleteTodo(id: Int)
 
+    @Query("SELECT * FROM TodoEntity WHERE today = :today AND date = :date")
+    suspend fun getAllTodoList(today: Boolean, date: Int): List<TodoEntity>
+
 }

@@ -12,5 +12,7 @@ interface Repository {
 
     suspend fun deleteTodo(id: Int)
 
+    suspend fun getAllTodoList(today: Boolean, date: Int): List<Todo>
+
 
 }

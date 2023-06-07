@@ -6,34 +6,18 @@
     android:layout_height="match_parent"
     tools:context=".ListFragment">
 
-    <TextView
-        android:id="@+id/tv_calendarYear"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@+id/tv_calendarMonth"
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/mcv_user_image"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginEnd="14dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
 
-    <TextView
-        android:id="@+id/tv_calendarMonth"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@+id/calendarView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_calendarYear" />
-
-    <com.kizitonwose.calendar.view.WeekCalendarView
-        android:id="@+id/calendarView"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:cv_dayViewResource="@layout/calendar_day_layout"
-        app:layout_constraintBottom_toTopOf="@+id/rv_todo_list"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_calendarMonth" />
-    "
+        <androidx.appcompat.widget.AppCompatImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </com.google.android.material.card.MaterialCardView>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_todo_list"
@@ -42,6 +26,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/calendarView" />
-
+        app:layout_constraintTop_toBottomOf="@+id/mcv_user_image"
+        tools:listitem="@layout/recyclerview_todo_list_item" />
 </androidx.constraintlayout.widget.ConstraintLayout>

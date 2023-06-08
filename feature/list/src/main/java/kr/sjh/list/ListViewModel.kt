@@ -1,6 +1,7 @@
 package kr.sjh.list
 
 import android.util.Log
+import android.view.View
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -31,8 +32,9 @@ class ListViewModel @Inject constructor(
 
     init {
 //        initDataTest()
+
         viewModelScope.launch {
-            getAllTodoList(20230606)
+            getAllTodoList(20230608)
         }
     }
 
@@ -118,7 +120,10 @@ class ListViewModel @Inject constructor(
                 getAllTodoListUseCase.invoke(
                     true,
                     date
-                ).toMutableList()
+                ).map {
+                    it.viewType = ListViewType.ITEM
+                    it
+                }.toMutableList()
             }
 
             val tomorrow = withContext(Dispatchers.IO) {
@@ -131,7 +136,7 @@ class ListViewModel @Inject constructor(
                 }.toMutableList()
             }
 
-            //오늘 헤더추가
+            //today 헤더추가
             today.add(
                 0,
                 Todo(
@@ -142,7 +147,8 @@ class ListViewModel @Inject constructor(
                     viewType = ListViewType.HEADER_TODAY
                 )
             )
-            //내일 헤더추가
+
+            //tomorrow 헤더추가
             tomorrow.add(
                 0,
                 Todo(
@@ -154,9 +160,41 @@ class ListViewModel @Inject constructor(
                 )
             )
 
+            //아이템이 없는경우 뷰타입 EMPTY
+            if (today.size <= 1) {
+                today.add(
+                    Todo(
+                        date = 20220505,
+                        title = "",
+                        is_check = false,
+                        today = false,
+                        viewType = ListViewType.EMPTY
+                    )
+                )
+            }
+
+            if (tomorrow.size <= 1) {
+                tomorrow.add(
+                    Todo(
+                        date = 20220505,
+                        title = "",
+                        is_check = false,
+                        today = false,
+                        viewType = ListViewType.EMPTY
+                    )
+                )
+            }
+
+
+            //헤더 추가후 배열 addAll
             today.addAll(tomorrow)
-            Log.i("sjh", "today : ${today.size}")
+
             _todoList.value = today
+
         }
+    }
+
+    fun addTodoList(view: View) {
+
     }
 }

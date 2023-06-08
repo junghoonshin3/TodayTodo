@@ -11,6 +11,7 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kizitonwose.calendar.core.*
 import dagger.hilt.android.AndroidEntryPoint
+import kr.sjh.add.AddFragment
 import kr.sjh.list.adapter.RvListAdapter
 import kr.sjh.list.databinding.FragmentListBinding
 
@@ -46,6 +47,14 @@ class ListFragment : Fragment() {
 
         list.todoList.observe(viewLifecycleOwner) {
             rvAdapter.submitList(it.toMutableList())
+        }
+
+        val bottomSheetDialog = AddFragment()
+
+
+        //test
+        binding.fbTodoAdd.setOnClickListener {
+            bottomSheetDialog.show(parentFragmentManager, "bottom_sheet")
         }
 
 

@@ -47,6 +47,7 @@ android {
 dependencies {
 
     implementation(project(":domain"))
+    implementation(project(":feature:add"))
 
     // AndroidX
     implementation(Libraries.uiLibraries)

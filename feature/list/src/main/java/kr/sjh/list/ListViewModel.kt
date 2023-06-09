@@ -9,6 +9,9 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kr.sjh.domain.model.ListViewType
@@ -26,9 +29,14 @@ class ListViewModel @Inject constructor(
 ) :
     ViewModel() {
 
-    val todoList: LiveData<List<Todo>> get() = _todoList
+    private val _todoList = MutableStateFlow<List<Todo>>(emptyList())
 
-    private var _todoList: MutableLiveData<List<Todo>> = MutableLiveData()
+    val todoList: StateFlow<List<Todo>> = _todoList
+
+    private val _addEvent = MutableStateFlow(false)
+
+    val addEvent = _addEvent.asStateFlow()
+
 
     init {
 //        initDataTest()
@@ -194,7 +202,8 @@ class ListViewModel @Inject constructor(
         }
     }
 
-    fun addTodoList(view: View) {
-
+    fun addTodoList(v:View) {
+        Log.i("sjh", "??????????")
+        _addEvent.value = !_addEvent.value
     }
 }

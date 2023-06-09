@@ -5,4 +5,9 @@
         <item name="android:textColor">@color/material_on_primary_disabled</item>
         <item name="android:textSize">12sp</item>
     </style>
+
+    <style name="TimePickerTheme">
+        <item name="android:textSize">17sp</item>
+        <item name="android:textColorPrimary">@android:color/darker_gray</item>
+    </style>
 </resources>

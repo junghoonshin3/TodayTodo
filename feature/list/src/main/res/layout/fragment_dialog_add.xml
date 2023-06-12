@@ -1,15 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
         <variable
             name="add"
-            type="kr.sjh.add.AddViewModel" />
+            type="kr.sjh.list.dialog.AddViewModel" />
+
+        <variable
+            name="list"
+            type="kr.sjh.list.ListViewModel" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:behavior_draggable="false"
@@ -55,9 +59,11 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:focusableInTouchMode="true"
                 android:hint="이름"
                 android:inputType="text"
                 android:maxLines="1"
+                android:text="@={add._name}"
                 android:textSize="16dp" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -72,23 +78,20 @@
             app:layout_constraintStart_toStartOf="@+id/tv_name"
             app:layout_constraintTop_toBottomOf="@+id/tv_name" />
 
-        <LinearLayout
-            android:id="@+id/ll_select_time"
+
+        <TextView
+            android:id="@+id/tv_select_time"
             android:layout_width="0dp"
             android:layout_height="50dp"
             android:background="#d3d3d3"
-            android:gravity="center"
+            android:onClick="@{add::isOpenTimePicker}"
+            android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="@+id/tv_hour"
             app:layout_constraintEnd_toEndOf="@+id/til_input_name"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/til_input_name"
-            app:layout_constraintTop_toTopOf="@+id/tv_hour">
-
-            <TextView
-                android:id="@+id/tv_select_time"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="20sp" />
-        </LinearLayout>
+            app:layout_constraintTop_toTopOf="@+id/tv_hour"
+            app:layout_constraintVertical_bias="0.478" />
 
         <TextView
             android:id="@+id/tv_is_today"
@@ -106,9 +109,59 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="@+id/tv_is_today"
-            app:layout_constraintEnd_toEndOf="@+id/ll_select_time"
-            app:layout_constraintStart_toStartOf="@+id/ll_select_time"
+            app:layout_constraintEnd_toEndOf="@+id/tv_select_time"
+            app:layout_constraintStart_toStartOf="@+id/tv_select_time"
             app:layout_constraintTop_toTopOf="@+id/tv_is_today"></androidx.appcompat.widget.AppCompatToggleButton>
 
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/mcv_done"
+            android:layout_width="0dp"
+            android:layout_height="47dp"
+            android:layout_marginTop="62dp"
+            android:layout_marginEnd="5dp"
+            android:backgroundTint="@android:color/black"
+            android:onClick="@{()->add.save()}"
+            app:cardCornerRadius="4dp"
+            app:layout_constraintEnd_toStartOf="@+id/mcv_cancle"
+            app:layout_constraintStart_toStartOf="@+id/tv_is_today"
+            app:layout_constraintTop_toBottomOf="@+id/tg_is_today">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="저장"
+                android:textColor="@android:color/white" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/mcv_cancle"
+            android:layout_width="0dp"
+            android:layout_height="47dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="62dp"
+            android:backgroundTint="@android:color/black"
+            android:onClick="@{list::close}"
+            app:cardCornerRadius="4dp"
+            app:layout_constraintEnd_toEndOf="@+id/tg_is_today"
+            app:layout_constraintStart_toEndOf="@+id/mcv_done"
+            app:layout_constraintTop_toBottomOf="@+id/tg_is_today">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="취소"
+                android:textColor="@android:color/white" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:text="Today를 OFF로 한 경우, 내일 할일로 저장됩니다."
+            app:layout_constraintEnd_toEndOf="@+id/mcv_cancle"
+            app:layout_constraintStart_toStartOf="@+id/mcv_done"
+            app:layout_constraintTop_toBottomOf="@+id/mcv_done" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -52,7 +52,6 @@ dependencies {
     implementation(project(":data"))
     implementation(project(":domain"))
     implementation(project(":feature:main"))
-    implementation(project(":feature:add"))
     implementation(project(":feature:list"))
 
     // AndroidX

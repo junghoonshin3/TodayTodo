@@ -46,7 +46,6 @@ android {
 
 dependencies {
     implementation(project(":domain"))
-    implementation(project(":feature:add"))
     implementation(project(":feature:list"))
 
     // AndroidX

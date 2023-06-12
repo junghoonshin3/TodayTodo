@@ -9,9 +9,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kr.sjh.domain.model.ListViewType
@@ -33,9 +31,9 @@ class ListViewModel @Inject constructor(
 
     val todoList: StateFlow<List<Todo>> = _todoList
 
-    private val _addEvent = MutableStateFlow(false)
+    private val _openAdd = MutableSharedFlow<Boolean>()
 
-    val addEvent = _addEvent.asStateFlow()
+    val openAdd = _openAdd.asSharedFlow()
 
 
     init {
@@ -202,8 +200,15 @@ class ListViewModel @Inject constructor(
         }
     }
 
-    fun addTodoList(v:View) {
-        Log.i("sjh", "??????????")
-        _addEvent.value = !_addEvent.value
+    fun show(v: View) {
+        viewModelScope.launch {
+            _openAdd.emit(true)
+        }
+    }
+
+    fun close(v: View) {
+        viewModelScope.launch {
+            _openAdd.emit(false)
+        }
     }
 }

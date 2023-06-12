@@ -1,4 +1,4 @@
-package kr.sjh.add
+package kr.sjh.list.dialog
 
 import android.app.Dialog
 import android.os.Bundle
@@ -6,62 +6,65 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AutoCompleteTextView.OnDismissListener
-import android.widget.LinearLayout
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
-import kr.sjh.add.databinding.FragmentAddBinding
-import kr.sjh.add.timepicker.AddTimePicker
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
+import kr.sjh.list.ListViewModel
+import kr.sjh.list.R
+import kr.sjh.list.databinding.FragmentDialogAddBinding
+import kr.sjh.list.dialog.timepicker.AddTimePicker
 import java.util.*
 
 
 @AndroidEntryPoint
-class AddFragment : BottomSheetDialogFragment() {
+class AddDialogFragment(private val c: Calendar) : BottomSheetDialogFragment() {
 
     private val add: AddViewModel by viewModels()
 
-    private lateinit var binding: FragmentAddBinding
+    private val list: ListViewModel by viewModels(ownerProducer = { requireParentFragment() })
 
-    lateinit var onDismissListener: () -> Unit
+    private lateinit var binding: FragmentDialogAddBinding
 
-
-    fun setOnDismissListener(listener: () -> Unit) {
-        this.onDismissListener = listener
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_add, container, false)
+        return inflater.inflate(R.layout.fragment_dialog_add, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding = FragmentAddBinding.bind(view)
-        val dialog = AddTimePicker(requireContext()).apply {
+        binding = FragmentDialogAddBinding.bind(view)
+        binding.add = add
+        binding.list = list
+
+
+        val dialog = AddTimePicker(c).apply {
+            binding.tvSelectTime.text = "${getHourValue()}:${getMinuteValue()}"
             setAddTimePickerListener { h, m ->
                 binding.tvSelectTime.text = "$h:$m"
             }
         }
 
-        binding.llSelectTime.setOnClickListener {
-            val today = Calendar.getInstance()
-            Log.i(
-                "sjh",
-                "hour : ${today.get(Calendar.HOUR_OF_DAY)} minute: ${today.get(Calendar.MINUTE)}"
-            )
-
-            dialog.apply {
-                setHourValue(today.get(Calendar.HOUR_OF_DAY))
-                setMinuteValue(today.get(Calendar.MINUTE))
-                show()
+        lifecycleScope.launchWhenStarted {
+            add.hour.collect {
+                Log.i("sjh", "it : ${it}")
+                if (it) {
+                    dialog.show(childFragmentManager, "timepicker")
+                } else {
+                    dialog.dismiss()
+                }
             }
         }
+
+
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -74,7 +77,8 @@ class AddFragment : BottomSheetDialogFragment() {
                 val behaviour = BottomSheetBehavior.from(it)
                 setupFullHeight(it)
                 behaviour.state = BottomSheetBehavior.STATE_EXPANDED
-                behaviour.isDraggable = false
+                behaviour.isDraggable = false //드레그 막기
+                isCancelable = false // 영역 밖 클릭시 dismiss 막기
             }
         }
         return dialog
@@ -84,11 +88,6 @@ class AddFragment : BottomSheetDialogFragment() {
         val layoutParams = bottomSheet.layoutParams
         layoutParams.height = (resources.displayMetrics.heightPixels * 0.8).toInt()
         bottomSheet.layoutParams = layoutParams
-    }
-
-    override fun dismiss() {
-        super.dismiss()
-        onDismissListener.invoke()
     }
 
 }

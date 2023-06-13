@@ -15,6 +15,7 @@ import kotlinx.coroutines.withContext
 import kr.sjh.domain.model.ListViewType
 import kr.sjh.domain.model.Todo
 import kr.sjh.domain.usecase.list.*
+import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
@@ -37,90 +38,12 @@ class ListViewModel @Inject constructor(
 
 
     init {
-//        initDataTest()
-
         viewModelScope.launch {
-            getAllTodoList(20230608)
+            getAllTodoList(Date())
         }
     }
 
-    private fun initDataTest() {
-        viewModelScope.launch {
-            //mock data
-            insertAllTodoUseCase.invoke(
-                listOf(
-                    Todo(
-                        date = 20230606,
-                        title = "영화 예매하기",
-                        today = true,
-                        is_check = false,
-                    ),
-                    Todo(
-                        date = 20230606,
-                        title = "영화 예매하기",
-                        today = true,
-                        is_check = false,
-                    ),
-                    Todo(
-                        date = 20230606,
-                        title = "영화 예매하기",
-                        today = true,
-                        is_check = false,
-                    ),
-                    Todo(
-                        date = 20230606,
-                        title = "영화 예매하기",
-                        today = true,
-                        is_check = false,
-                    ),
-                    Todo(
-                        date = 20230606,
-                        title = "영화 예매하기",
-                        today = true,
-                        is_check = false,
-                    ),
-                    Todo(
-                        date = 20230606,
-                        title = "영화 예매하기",
-                        today = true,
-                        is_check = false,
-                    ),
-                    Todo(
-                        date = 20230606,
-                        title = "영화 예매하기",
-                        today = false,
-                        is_check = false,
-                    ),
-                    Todo(
-                        date = 20230606,
-                        title = "영화 예매하기",
-                        today = false,
-                        is_check = false,
-                    ),
-                    Todo(
-                        date = 20230606,
-                        title = "영화 예매하기",
-                        today = false,
-                        is_check = false,
-                    ),
-                    Todo(
-                        date = 20230606,
-                        title = "영화 예매하기",
-                        today = false,
-                        is_check = false,
-                    ),
-                    Todo(
-                        date = 20230606,
-                        title = "영화 예매하기",
-                        today = false,
-                        is_check = false,
-                    ),
-                )
-            )
-        }
-    }
-
-    private suspend fun getAllTodoList(date: Int) {
+    private suspend fun getAllTodoList(date: Date) {
         coroutineScope {
             val today = withContext(Dispatchers.IO) {
                 getAllTodoListUseCase.invoke(
@@ -146,10 +69,11 @@ class ListViewModel @Inject constructor(
             today.add(
                 0,
                 Todo(
-                    date = 20220505,
+                    date = Date(),
                     title = "",
                     is_check = false,
                     today = false,
+                    time = "",
                     viewType = ListViewType.HEADER_TODAY
                 )
             )
@@ -158,10 +82,11 @@ class ListViewModel @Inject constructor(
             tomorrow.add(
                 0,
                 Todo(
-                    date = 20220505,
+                    date = Date(),
                     title = "",
                     is_check = false,
                     today = false,
+                    time = "",
                     viewType = ListViewType.HEADER_TOMMOROW
                 )
             )
@@ -170,9 +95,10 @@ class ListViewModel @Inject constructor(
             if (today.size <= 1) {
                 today.add(
                     Todo(
-                        date = 20220505,
+                        date = Date(),
                         title = "",
                         is_check = false,
+                        time = "",
                         today = false,
                         viewType = ListViewType.EMPTY
                     )
@@ -182,10 +108,11 @@ class ListViewModel @Inject constructor(
             if (tomorrow.size <= 1) {
                 tomorrow.add(
                     Todo(
-                        date = 20220505,
+                        date = Date(),
                         title = "",
                         is_check = false,
                         today = false,
+                        time = "",
                         viewType = ListViewType.EMPTY
                     )
                 )

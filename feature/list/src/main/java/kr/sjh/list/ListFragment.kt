@@ -54,10 +54,15 @@ class ListFragment : Fragment() {
 
         lifecycleScope.launchWhenStarted {
             list.openAdd.collect {
-                if (it) {
+
+                if (it && !addDialogFragment.isAdded) {
+                    addDialogFragment.updateTimeNow()
                     addDialogFragment.show(childFragmentManager, "addDialog")
+
+
                 } else {
                     addDialogFragment.dismiss()
+
                 }
             }
         }
@@ -67,7 +72,5 @@ class ListFragment : Fragment() {
                 rvAdapter.submitList(it)
             }
         }
-
-
     }
 }

@@ -8,6 +8,7 @@ import kr.sjh.data.toTodoEntityList
 import kr.sjh.data.toTodoList
 import kr.sjh.domain.model.Todo
 import kr.sjh.domain.repository.Repository
+import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -16,7 +17,7 @@ import javax.inject.Singleton
 class TodoRepository @Inject constructor(private val localDataSource: LocalDataSource) :
     Repository {
 
-    override fun getAllDailyTodoListByFlow(date: Int): Flow<List<Todo>> {
+    override fun getAllDailyTodoListByFlow(date: Date): Flow<List<Todo>> {
         return localDataSource.getAllDailyTodoListByFlow(date).map {
             it.toTodoList()
         }
@@ -34,9 +35,10 @@ class TodoRepository @Inject constructor(private val localDataSource: LocalDataS
         localDataSource.deleteTodo(id)
     }
 
-    override suspend fun getAllTodoList(today: Boolean, date: Int): List<Todo> {
+
+    override suspend fun getAllTodoList(today: Boolean, date: Date): List<Todo> {
         return localDataSource.getAllTodoList(today, date).map {
-            Todo(it.id, it.date, it.title, it.today, it.is_check)
+            Todo(it.id, it.date, it.title, it.time, it.today, it.is_check)
         }
     }
 

@@ -1,6 +1,7 @@
 package kr.sjh.list.dialog
 
 import android.app.Dialog
+import android.content.DialogInterface
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -18,17 +19,20 @@ import kr.sjh.list.ListViewModel
 import kr.sjh.list.R
 import kr.sjh.list.databinding.FragmentDialogAddBinding
 import kr.sjh.list.dialog.timepicker.AddTimePicker
+import java.text.SimpleDateFormat
 import java.util.*
 
 
 @AndroidEntryPoint
-class AddDialogFragment(private val c: Calendar) : BottomSheetDialogFragment() {
+class AddDialogFragment(private var c: Calendar) : BottomSheetDialogFragment() {
 
-    private val add: AddViewModel by viewModels()
+    private val add: AddViewModel by viewModels(ownerProducer = { requireActivity() })
 
     private val list: ListViewModel by viewModels(ownerProducer = { requireParentFragment() })
 
     private lateinit var binding: FragmentDialogAddBinding
+
+    private lateinit var timePickerDialog: AddTimePicker
 
 
     override fun onCreateView(
@@ -46,21 +50,24 @@ class AddDialogFragment(private val c: Calendar) : BottomSheetDialogFragment() {
         binding.list = list
 
 
-        val dialog = AddTimePicker(c).apply {
-            binding.tvSelectTime.text = "${getHourValue()}:${getMinuteValue()}"
-            setAddTimePickerListener { h, m ->
-                binding.tvSelectTime.text = "$h:$m"
+        timePickerDialog = AddTimePicker.newInstance(c)
+
+        lifecycleScope.launchWhenStarted {
+            add.isHourOpen.collect {
+                Log.i("sjh", "it : ${it}")
+                if (it && !timePickerDialog.isAdded) {
+                    timePickerDialog.show(childFragmentManager, "timepicker")
+                } else if (!it && timePickerDialog.isAdded) {
+                    timePickerDialog.dismiss()
+                }
             }
         }
 
         lifecycleScope.launchWhenStarted {
-            add.hour.collect {
-                Log.i("sjh", "it : ${it}")
-                if (it) {
-                    dialog.show(childFragmentManager, "timepicker")
-                } else {
-                    dialog.dismiss()
-                }
+            add.time.collect {
+                Log.i("sjh", "time : ${it}")
+                //TODO 왜 xml에서는 바인딩시 업데이트가 안되고 코드상에서 해야될까?
+                binding.tvSelectTime.text = it
             }
         }
 
@@ -88,6 +95,17 @@ class AddDialogFragment(private val c: Calendar) : BottomSheetDialogFragment() {
         val layoutParams = bottomSheet.layoutParams
         layoutParams.height = (resources.displayMetrics.heightPixels * 0.8).toInt()
         bottomSheet.layoutParams = layoutParams
+    }
+
+    fun updateTimeNow() {
+        this.c = Calendar.getInstance()
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        binding.tieName.text?.clear()
+        binding.tgIsToday.isChecked = false
+        super.onDismiss(dialog)
+
     }
 
 }

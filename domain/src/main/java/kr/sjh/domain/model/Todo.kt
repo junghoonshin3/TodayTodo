@@ -4,9 +4,10 @@ import java.util.*
 
 data class Todo(
     val id: Int = 0,
-    val date: Int,
+    val date: Date,
+    val time: String,
     val title: String,
     val today: Boolean,
-    val is_check: Boolean,
+    val is_check: Boolean = false,
     var viewType: Int = ListViewType.ITEM
 )

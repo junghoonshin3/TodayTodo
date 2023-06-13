@@ -8,6 +8,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import kr.sjh.data.db.TodoDatabase
+import kr.sjh.data.db.convert.Converters
 import kr.sjh.data.db.dao.TodoDao
 import javax.inject.Singleton
 

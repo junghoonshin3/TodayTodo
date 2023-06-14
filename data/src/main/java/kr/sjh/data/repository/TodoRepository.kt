@@ -38,7 +38,7 @@ class TodoRepository @Inject constructor(private val localDataSource: LocalDataS
 
     override suspend fun getAllTodoList(today: Boolean, date: Date): List<Todo> {
         return localDataSource.getAllTodoList(today, date).map {
-            Todo(it.id, it.date, it.title, it.time, it.today, it.is_check)
+            Todo(it.id, it.date, it.hour, it.title, it.today, it.is_check)
         }
     }
 

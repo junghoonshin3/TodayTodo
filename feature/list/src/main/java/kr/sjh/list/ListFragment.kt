@@ -13,6 +13,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kizitonwose.calendar.core.*
 import dagger.hilt.android.AndroidEntryPoint
+import kr.sjh.list.adapter.ListDividerItemDeco
 import kr.sjh.list.adapter.RvListAdapter
 import kr.sjh.list.databinding.FragmentListBinding
 import kr.sjh.list.dialog.AddDialogFragment
@@ -46,20 +47,20 @@ class ListFragment : Fragment() {
         rvAdapter = RvListAdapter()
 
         binding.rvTodoList.apply {
+            addItemDecoration(ListDividerItemDeco(100, 100, 20, 20))
             layoutManager = LinearLayoutManager(requireContext())
             adapter = rvAdapter
+
+
         }
 
         val addDialogFragment = AddDialogFragment(Calendar.getInstance())
 
         lifecycleScope.launchWhenStarted {
             list.openAdd.collect {
-
                 if (it && !addDialogFragment.isAdded) {
                     addDialogFragment.updateTimeNow()
                     addDialogFragment.show(childFragmentManager, "addDialog")
-
-
                 } else {
                     addDialogFragment.dismiss()
 

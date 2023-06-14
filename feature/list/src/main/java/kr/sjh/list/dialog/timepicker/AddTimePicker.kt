@@ -36,8 +36,8 @@ class AddTimePicker(private val c: Calendar) : DialogFragment() {
         binding.sharedAdd = add
         binding.tpTimeSpinner.apply {
             setIs24HourView(true)
-//            hour = c.get(Calendar.HOUR_OF_DAY)
-//            minute = c.get(Calendar.MINUTE)
+            hour = c.get(Calendar.HOUR_OF_DAY)
+            minute = c.get(Calendar.MINUTE)
         }
 
 

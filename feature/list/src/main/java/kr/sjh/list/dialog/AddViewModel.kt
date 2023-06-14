@@ -34,67 +34,70 @@ class AddViewModel @Inject constructor(
 
     val _name = MutableStateFlow("")
 
-    var _today = MutableStateFlow(false)
-
-    var _hour = MutableStateFlow(Date())
-
+    var _today = MutableStateFlow(true)
 
     private val cal = Calendar.getInstance()
 
+    var _originHour = MutableStateFlow(cal.time)
 
-    private val _time = MutableStateFlow(getDateToHour())
-
-    val time = _time.asStateFlow()
-
+    var _hour = MutableStateFlow(cal.time)
 
     fun save(v: View) {
         viewModelScope.launch {
             Log.i("sjh", "_name ${_name.value}")
             insertTodoUseCase.invoke(
                 Todo(
-                    date = _hour.value,
+                    date = cal.time,
                     title = _name.value,
                     today = _today.value,
-                    time = _time.value
+                    hour = getDateToHour(_hour.value)
                 )
             )
-            _isHourOpen.emit(false)
+            _save.emit(true)
         }
     }
 
     fun today(compoundButton: CompoundButton, isChecked: Boolean) {
-        _hour.value = cal.time
+        if (!isChecked) {
+            cal.add(Calendar.DATE, 1)
+        } else {
+            cal.time = Date()
+        }
         _today.value = isChecked
     }
 
     fun isOpenTimePicker(v: View) {
         viewModelScope.launch {
+            //시간저장
+            _originHour.value = cal.time
             _isHourOpen.emit(true)
         }
     }
 
     fun isCloseTimePicker(v: View) {
         viewModelScope.launch {
+            _hour.value = _originHour.value
             _isHourOpen.emit(false)
         }
     }
 
     fun confirmTimePicker(v: View) {
         viewModelScope.launch {
-            _time.emit(getDateToHour())
+            _hour.emit(cal.time)
             _isHourOpen.emit(false)
         }
     }
 
     fun hour(v: TimePicker, hourOfDay: Int, minute: Int) {
         viewModelScope.launch {
+            cal.set(Calendar.HOUR_OF_DAY, hourOfDay)
+            cal.set(Calendar.MINUTE, minute)
 
         }
     }
 
-    //
-    fun getDateToHour(): String {
-        return SimpleDateFormat("HH:mm").format(_hour.value)
+    fun getDateToHour(date: Date): String {
+        return SimpleDateFormat("HH:mm").format(date)
     }
 
 }

@@ -26,6 +26,7 @@ class RvListAdapter : ListAdapter<Todo, RecyclerView.ViewHolder>(ItemDiffUtil), 
                         parent,
                         false
                     )
+
                 )
             HEADER_TOMMOROW ->
                 TodoListTomorrowHeaderViewHolder(
@@ -70,7 +71,9 @@ class RvListAdapter : ListAdapter<Todo, RecyclerView.ViewHolder>(ItemDiffUtil), 
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
-            is TodoListTodayHeaderViewHolder -> {}
+            is TodoListTodayHeaderViewHolder -> {
+
+            }
             is TodoListTomorrowHeaderViewHolder -> {}
             is TodoListItemViewHolder -> {
                 holder.bind(getItem(position))
@@ -101,17 +104,14 @@ class RvListAdapter : ListAdapter<Todo, RecyclerView.ViewHolder>(ItemDiffUtil), 
 
     inner class TodoListTodayHeaderViewHolder(private val binding: RecyclerviewTodoListTodayBinding) :
         RecyclerView.ViewHolder(binding.root) {
-
     }
 
     inner class TodoListTomorrowHeaderViewHolder(private val binding: RecyclerviewTodoListTomorrowBinding) :
         RecyclerView.ViewHolder(binding.root) {
-
     }
 
     inner class TodoListEmptyHeaderViewHolder(private val binding: RecyclerviewTodoListEmptyBinding) :
         RecyclerView.ViewHolder(binding.root) {
-
     }
 
     inner class TodoListTomorrowItemViewHolder(private val binding: RecyclerviewTodoListTomorrowItemBinding) :

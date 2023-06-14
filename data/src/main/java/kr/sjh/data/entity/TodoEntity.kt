@@ -17,7 +17,7 @@ data class TodoEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
     val date: Date,
-    val time: String,
+    val hour: String,
     val title: String,
     val today: Boolean,
     val is_check: Boolean,

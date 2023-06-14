@@ -13,8 +13,6 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.collectLatest
 import kr.sjh.list.ListViewModel
 import kr.sjh.list.R
 import kr.sjh.list.databinding.FragmentDialogAddBinding
@@ -49,7 +47,6 @@ class AddDialogFragment(private var c: Calendar) : BottomSheetDialogFragment() {
         binding.add = add
         binding.list = list
 
-
         timePickerDialog = AddTimePicker.newInstance(c)
 
         lifecycleScope.launchWhenStarted {
@@ -64,10 +61,16 @@ class AddDialogFragment(private var c: Calendar) : BottomSheetDialogFragment() {
         }
 
         lifecycleScope.launchWhenStarted {
-            add.time.collect {
-                Log.i("sjh", "time : ${it}")
-                //TODO 왜 xml에서는 바인딩시 업데이트가 안되고 코드상에서 해야될까?
-                binding.tvSelectTime.text = it
+            add._hour.collect {
+                //TODO xml에서는 바인딩시 업데이트가 안되고 코드상에서 해야될까...........?
+                binding.tvSelectTime.text = SimpleDateFormat("HH:mm").format(it)
+            }
+        }
+
+        lifecycleScope.launchWhenStarted {
+            add.save.collect {
+                list.update()
+                list.close(view)
             }
         }
 
@@ -102,10 +105,11 @@ class AddDialogFragment(private var c: Calendar) : BottomSheetDialogFragment() {
     }
 
     override fun onDismiss(dialog: DialogInterface) {
-        binding.tieName.text?.clear()
-        binding.tgIsToday.isChecked = false
+//        binding.tieName.text?.clear()
+//        binding.tgIsToday.isChecked = false
         super.onDismiss(dialog)
 
     }
+
 
 }

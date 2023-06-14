@@ -55,10 +55,14 @@ class ListViewModel @Inject constructor(
                 }.toMutableList()
             }
 
+
             val tomorrow = withContext(Dispatchers.IO) {
+                val c = Calendar.getInstance()
+                c.time = date
+                c.add(Calendar.DATE, 1)
                 getAllTodoListUseCase.invoke(
                     false,
-                    date
+                    c.time
                 ).map {
                     it.viewType = ListViewType.ITEM_TOMORROW
                     it
@@ -71,9 +75,9 @@ class ListViewModel @Inject constructor(
                 Todo(
                     date = Date(),
                     title = "",
+                    hour = "",
                     is_check = false,
                     today = false,
-                    time = "",
                     viewType = ListViewType.HEADER_TODAY
                 )
             )
@@ -84,12 +88,13 @@ class ListViewModel @Inject constructor(
                 Todo(
                     date = Date(),
                     title = "",
+                    hour = "",
                     is_check = false,
                     today = false,
-                    time = "",
                     viewType = ListViewType.HEADER_TOMMOROW
                 )
             )
+            Log.i("sjh", "today: ${today.size}")
 
             //아이템이 없는경우 뷰타입 EMPTY
             if (today.size <= 1) {
@@ -97,8 +102,8 @@ class ListViewModel @Inject constructor(
                     Todo(
                         date = Date(),
                         title = "",
+                        hour = "",
                         is_check = false,
-                        time = "",
                         today = false,
                         viewType = ListViewType.EMPTY
                     )
@@ -110,9 +115,9 @@ class ListViewModel @Inject constructor(
                     Todo(
                         date = Date(),
                         title = "",
+                        hour = "",
                         is_check = false,
                         today = false,
-                        time = "",
                         viewType = ListViewType.EMPTY
                     )
                 )
@@ -138,4 +143,11 @@ class ListViewModel @Inject constructor(
             _openAdd.emit(false)
         }
     }
+
+    fun update() {
+        viewModelScope.launch {
+            getAllTodoList(Date())
+        }
+    }
+
 }

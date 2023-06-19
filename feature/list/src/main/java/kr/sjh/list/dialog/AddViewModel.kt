@@ -8,6 +8,8 @@ import android.widget.TimePicker
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.textfield.TextInputLayout
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -38,19 +40,38 @@ class AddViewModel @Inject constructor(
 
     private val cal = Calendar.getInstance()
 
-    var _originHour = MutableStateFlow(cal.time)
+    var selectHour = 0
 
-    var _hour = MutableStateFlow(cal.time)
+    var selectMinute = 0
+
+    private val _hour = MutableStateFlow(cal.get(Calendar.HOUR_OF_DAY))
+
+    val hour = _hour.asStateFlow()
+
+    private val _minute = MutableStateFlow(cal.get(Calendar.MINUTE))
+
+    val minute = _minute.asStateFlow()
+
+    val _confirm = MutableStateFlow(false)
+
+    private val _isEmptyName = MutableSharedFlow<Boolean>()
+
+    val isEmptyName = _isEmptyName.asSharedFlow()
 
     fun save(v: View) {
+
         viewModelScope.launch {
-            Log.i("sjh", "_name ${_name.value}")
+            if (_name.value.isNullOrEmpty()) {
+                _isEmptyName.emit(true)
+                return@launch
+            }
             insertTodoUseCase.invoke(
                 Todo(
                     date = cal.time,
                     title = _name.value,
                     today = _today.value,
-                    hour = getDateToHour(_hour.value)
+                    hour = _hour.value,
+                    minute = _minute.value
                 )
             )
             _save.emit(true)
@@ -69,35 +90,31 @@ class AddViewModel @Inject constructor(
     fun isOpenTimePicker(v: View) {
         viewModelScope.launch {
             //시간저장
-            _originHour.value = cal.time
             _isHourOpen.emit(true)
         }
     }
 
     fun isCloseTimePicker(v: View) {
         viewModelScope.launch {
-            _hour.value = _originHour.value
             _isHourOpen.emit(false)
         }
     }
 
     fun confirmTimePicker(v: View) {
         viewModelScope.launch {
-            _hour.emit(cal.time)
+            _hour.emit(selectHour)
+            _minute.emit(selectMinute)
             _isHourOpen.emit(false)
+            _confirm.emit(true)
         }
     }
+
 
     fun hour(v: TimePicker, hourOfDay: Int, minute: Int) {
         viewModelScope.launch {
-            cal.set(Calendar.HOUR_OF_DAY, hourOfDay)
-            cal.set(Calendar.MINUTE, minute)
-
+            selectHour = hourOfDay
+            selectMinute = minute
         }
-    }
-
-    fun getDateToHour(date: Date): String {
-        return SimpleDateFormat("HH:mm").format(date)
     }
 
 }

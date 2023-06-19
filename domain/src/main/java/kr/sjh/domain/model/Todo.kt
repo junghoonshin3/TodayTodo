@@ -5,7 +5,8 @@ import java.util.*
 data class Todo(
     val id: Int = 0,
     val date: Date,
-    val hour: String,
+    val hour: Int,
+    val minute: Int,
     val title: String,
     val today: Boolean,
     val is_check: Boolean = false,

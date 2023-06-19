@@ -44,29 +44,23 @@
             app:layout_constraintStart_toStartOf="@+id/tv_add_title"
             app:layout_constraintTop_toBottomOf="@+id/tv_add_title" />
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/til_input_name"
+
+        <EditText
+            android:id="@+id/tie_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="17dp"
-            android:layout_marginEnd="34dp"
-            app:hintTextAppearance="@style/TextInputLayoutHintText"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="29dp"
+            android:focusableInTouchMode="true"
+            android:hint="@{add._name.empty? `이름을 입력해주세요`:``}"
+            android:inputType="text"
+            android:maxLines="1"
+            android:text="@={add._name}"
+            android:textSize="16dp"
             app:layout_constraintBottom_toBottomOf="@+id/tv_name"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/tv_name"
-            app:layout_constraintTop_toTopOf="@+id/tv_name">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/tie_name"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:focusableInTouchMode="true"
-                android:hint="이름"
-                android:inputType="text"
-                android:maxLines="1"
-                android:text="@={add._name}"
-                android:textSize="16dp" />
-        </com.google.android.material.textfield.TextInputLayout>
+            app:layout_constraintTop_toTopOf="@+id/tv_name" />
 
         <TextView
             android:id="@+id/tv_hour"
@@ -87,11 +81,12 @@
             android:background="#d3d3d3"
             android:gravity="center"
             android:onClick="@{add::isOpenTimePicker}"
+            android:text="@{add.hour+`:`+add.minute}"
             android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="@+id/tv_hour"
-            app:layout_constraintEnd_toEndOf="@+id/til_input_name"
+            app:layout_constraintEnd_toEndOf="@+id/tie_name"
             app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@+id/til_input_name"
+            app:layout_constraintStart_toStartOf="@+id/tie_name"
             app:layout_constraintTop_toTopOf="@+id/tv_hour"
             app:layout_constraintVertical_bias="0.478" />
 
@@ -115,7 +110,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/tv_is_today"
             app:layout_constraintEnd_toEndOf="@+id/tv_select_time"
             app:layout_constraintStart_toStartOf="@+id/tv_select_time"
-            app:layout_constraintTop_toTopOf="@+id/tv_is_today"></androidx.appcompat.widget.AppCompatToggleButton>
+            app:layout_constraintTop_toTopOf="@+id/tv_is_today" />
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/mcv_done"

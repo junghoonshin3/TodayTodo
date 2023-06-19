@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kizitonwose.calendar.core.*
 import dagger.hilt.android.AndroidEntryPoint
@@ -31,6 +32,8 @@ class ListFragment : Fragment() {
 
     private lateinit var rvAdapter: RvListAdapter
 
+    private lateinit var addDialogFragment: AddDialogFragment
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -47,14 +50,23 @@ class ListFragment : Fragment() {
         rvAdapter = RvListAdapter()
 
         binding.rvTodoList.apply {
-            addItemDecoration(ListDividerItemDeco(100, 100, 20, 20))
+            addItemDecoration(ListDividerItemDeco())
+            addItemDecoration(
+                DividerItemDecoration(
+                    requireContext(),
+                    DividerItemDecoration.VERTICAL
+                )
+            )
             layoutManager = LinearLayoutManager(requireContext())
             adapter = rvAdapter
 
-
         }
 
-        val addDialogFragment = AddDialogFragment(Calendar.getInstance())
+        addDialogFragment = AddDialogFragment(Calendar.getInstance())
+        observeData()
+    }
+
+    private fun observeData() {
 
         lifecycleScope.launchWhenStarted {
             list.openAdd.collect {

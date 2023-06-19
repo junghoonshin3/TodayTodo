@@ -12,6 +12,7 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kr.sjh.list.ListViewModel
 import kr.sjh.list.R
@@ -49,9 +50,13 @@ class AddDialogFragment(private var c: Calendar) : BottomSheetDialogFragment() {
 
         timePickerDialog = AddTimePicker.newInstance(c)
 
+        observeData()
+
+    }
+
+    private fun observeData() {
         lifecycleScope.launchWhenStarted {
             add.isHourOpen.collect {
-                Log.i("sjh", "it : ${it}")
                 if (it && !timePickerDialog.isAdded) {
                     timePickerDialog.show(childFragmentManager, "timepicker")
                 } else if (!it && timePickerDialog.isAdded) {
@@ -61,19 +66,33 @@ class AddDialogFragment(private var c: Calendar) : BottomSheetDialogFragment() {
         }
 
         lifecycleScope.launchWhenStarted {
-            add._hour.collect {
-                //TODO xml에서는 바인딩시 업데이트가 안되고 코드상에서 해야될까...........?
-                binding.tvSelectTime.text = SimpleDateFormat("HH:mm").format(it)
+            add._confirm.collect {
+                if (it) {
+                    binding.tvSelectTime.text =
+                        String.format("%02d:%02d", add.hour.value, add.minute.value)
+                }
+            }
+        }
+        lifecycleScope.launchWhenStarted {
+            add.save.collect {
+                list.update()
+                view?.let { it1 -> list.close(it1) }
             }
         }
 
         lifecycleScope.launchWhenStarted {
-            add.save.collect {
-                list.update()
-                list.close(view)
+            add.isEmptyName.collect {
+                if (it) {
+
+                    Snackbar.make(
+                        requireView().rootView,
+                        "이름을 입력해주세요",
+                        Snackbar.LENGTH_LONG
+                    ).show()
+                }
+
             }
         }
-
 
     }
 
@@ -105,8 +124,7 @@ class AddDialogFragment(private var c: Calendar) : BottomSheetDialogFragment() {
     }
 
     override fun onDismiss(dialog: DialogInterface) {
-//        binding.tieName.text?.clear()
-//        binding.tgIsToday.isChecked = false
+        binding.tieName.text?.clear()
         super.onDismiss(dialog)
 
     }

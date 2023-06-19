@@ -17,6 +17,10 @@ import kr.sjh.list.listener.ItemClickListener
 
 class RvListAdapter : ListAdapter<Todo, RecyclerView.ViewHolder>(ItemDiffUtil), ItemClickListener {
 
+    init {
+        setHasStableIds(true)
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             HEADER_TODAY ->
@@ -92,6 +96,10 @@ class RvListAdapter : ListAdapter<Todo, RecyclerView.ViewHolder>(ItemDiffUtil), 
     override fun getItemViewType(position: Int): Int {
         return getItem(position).viewType
 
+    }
+
+    override fun getItemId(position: Int): Long {
+        return getItem(position).hashCode().toLong()
     }
 
     inner class TodoListItemViewHolder(private val binding: RecyclerviewTodoListItemBinding) :

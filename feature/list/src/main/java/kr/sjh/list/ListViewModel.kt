@@ -36,6 +36,9 @@ class ListViewModel @Inject constructor(
 
     val openAdd = _openAdd.asSharedFlow()
 
+    private val _todo = MutableSharedFlow<Todo>()
+    val todo: SharedFlow<Todo> = _todo.asSharedFlow()
+
 
     init {
         viewModelScope.launch {
@@ -75,7 +78,8 @@ class ListViewModel @Inject constructor(
                 Todo(
                     date = Date(),
                     title = "",
-                    hour = "",
+                    hour = 0,
+                    minute = 0,
                     is_check = false,
                     today = false,
                     viewType = ListViewType.HEADER_TODAY
@@ -88,7 +92,8 @@ class ListViewModel @Inject constructor(
                 Todo(
                     date = Date(),
                     title = "",
-                    hour = "",
+                    hour = 0,
+                    minute = 0,
                     is_check = false,
                     today = false,
                     viewType = ListViewType.HEADER_TOMMOROW
@@ -102,7 +107,8 @@ class ListViewModel @Inject constructor(
                     Todo(
                         date = Date(),
                         title = "",
-                        hour = "",
+                        hour = 0,
+                        minute = 0,
                         is_check = false,
                         today = false,
                         viewType = ListViewType.EMPTY
@@ -115,7 +121,8 @@ class ListViewModel @Inject constructor(
                     Todo(
                         date = Date(),
                         title = "",
-                        hour = "",
+                        hour = 0,
+                        minute = 0,
                         is_check = false,
                         today = false,
                         viewType = ListViewType.EMPTY
@@ -148,6 +155,10 @@ class ListViewModel @Inject constructor(
         viewModelScope.launch {
             getAllTodoList(Date())
         }
+    }
+
+    fun onItemClick(view: View, todo: Todo) {
+
     }
 
 }

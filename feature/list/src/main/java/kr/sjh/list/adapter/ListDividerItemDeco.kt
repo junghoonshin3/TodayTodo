@@ -1,19 +1,12 @@
 package kr.sjh.list.adapter
 
 import android.graphics.Rect
-import android.util.Log
 import android.view.View
-import android.widget.HeaderViewListAdapter
-import androidx.core.view.marginLeft
 import androidx.recyclerview.widget.RecyclerView
+import kr.sjh.domain.model.ListViewType
 
 
-class ListDividerItemDeco constructor(
-    private val left: Int,
-    private val right: Int,
-    private val top: Int,
-    private val bottom: Int
-) : RecyclerView.ItemDecoration() {
+class ListDividerItemDeco : RecyclerView.ItemDecoration() {
 
     override fun getItemOffsets(
         outRect: Rect,
@@ -22,7 +15,31 @@ class ListDividerItemDeco constructor(
         state: RecyclerView.State
     ) {
         super.getItemOffsets(outRect, view, parent, state)
-        Log.i("sjh","${parent.adapter?.itemCount}")
+        val position = parent.getChildAdapterPosition(view)
+        if (position < 0) {
+            return
+        }
+        val viewType = parent.adapter?.getItemViewType(position)
+
+        when (viewType) {
+            ListViewType.HEADER_TODAY -> {
+                outRect.left = 10f.dp2px
+                outRect.right = 10f.dp2px
+                outRect.bottom = 10f.dp2px
+            }
+            ListViewType.HEADER_TOMMOROW -> {
+                outRect.left = 10f.dp2px
+                outRect.right = 10f.dp2px
+                outRect.bottom = 10f.dp2px
+                outRect.top = 10f.dp2px
+            }
+            ListViewType.ITEM, ListViewType.ITEM_TOMORROW -> {
+                outRect.left = 20f.dp2px
+                outRect.top = 5f.dp2px
+                outRect.bottom = 5f.dp2px
+            }
+        }
+
     }
 
 

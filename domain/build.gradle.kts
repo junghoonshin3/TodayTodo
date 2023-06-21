@@ -18,4 +18,6 @@ dependencies {
 
     implementation(Libraries.JavaX.INJECT)
 
+    implementation("joda-time:joda-time:2.12.5")
+
 }

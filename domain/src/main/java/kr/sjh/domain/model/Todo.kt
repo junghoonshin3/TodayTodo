@@ -1,14 +1,10 @@
 package kr.sjh.domain.model
 
-import java.util.*
+import org.joda.time.DateTime
 
 data class Todo(
-    val id: Int = 0,
-    val date: Date,
-    val hour: Int,
-    val minute: Int,
+    val date: DateTime,
     val title: String,
     val today: Boolean,
-    val is_check: Boolean = false,
-    var viewType: Int = ListViewType.ITEM
-)
+    var is_check: Boolean = false
+) : Item()

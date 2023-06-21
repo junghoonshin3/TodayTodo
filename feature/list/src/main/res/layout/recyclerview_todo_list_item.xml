@@ -11,9 +11,6 @@
 
         <import type="kr.sjh.list.ExtensionsKt" />
 
-        <variable
-            name="listener"
-            type="kr.sjh.list.listener.ItemClickListener" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -26,7 +23,7 @@
             android:layout_height="30dp"
             android:background="@drawable/custom_checkbox"
             android:button="@android:color/transparent"
-            android:onCheckedChanged="@{(v, isCheck)-> listener.onItemClick(todo, isCheck)}"
+            android:checked="@={todo._check}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -37,6 +34,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="15dp"
             android:text="@{todo.title}"
+            app:isComplete="@{todo._check}"
             android:textColor="#000000"
             app:layout_constraintBottom_toTopOf="@+id/tv_item_time"
             app:layout_constraintEnd_toEndOf="parent"

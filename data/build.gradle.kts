@@ -48,4 +48,6 @@ dependencies {
     // di
     implementation(Libraries.Hilt.HILT_ANDROID)
     kapt(Libraries.Hilt.HILT_COMPILER)
+
+    implementation("joda-time:joda-time:2.12.5")
 }

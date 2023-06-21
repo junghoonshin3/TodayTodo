@@ -1,14 +1,11 @@
 package kr.sjh.data.datasource.local
 
 import kotlinx.coroutines.flow.Flow
-import kr.sjh.data.db.dao.TodoDao
 import kr.sjh.data.entity.TodoEntity
-import java.util.*
-import javax.inject.Inject
-import javax.inject.Singleton
+import org.joda.time.DateTime
 
 interface LocalDataSource {
-    fun getAllDailyTodoListByFlow(date: Date): Flow<List<TodoEntity>>
+    fun getAllDailyTodoListByFlow(date: Long): Flow<List<TodoEntity>>
 
     suspend fun insertAllTodo(todoList: List<TodoEntity>)
 
@@ -16,5 +13,7 @@ interface LocalDataSource {
 
     suspend fun deleteTodo(id: Int)
 
-    suspend fun getAllTodoList(today: Boolean, date: Date): List<TodoEntity>
+    suspend fun getAllTodoList(today: Boolean, date: Long): List<TodoEntity>
+
+    suspend fun updateTodo(todo: TodoEntity): Int
 }

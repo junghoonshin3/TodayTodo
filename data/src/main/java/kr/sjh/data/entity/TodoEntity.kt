@@ -6,6 +6,7 @@ import androidx.annotation.RequiresApi
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import kotlinx.parcelize.Parcelize
+import org.joda.time.DateTime
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -16,12 +17,9 @@ import java.util.*
 data class TodoEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
-    val date: Date,
-    val hour: Int,
-    val minute: Int,
+    val date: DateTime,
     val title: String,
     val today: Boolean,
     val is_check: Boolean,
 ) : Parcelable {
-
 }

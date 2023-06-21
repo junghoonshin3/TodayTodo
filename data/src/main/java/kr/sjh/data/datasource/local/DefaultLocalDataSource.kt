@@ -1,8 +1,10 @@
 package kr.sjh.data.datasource.local
 
+import android.util.Log
 import kotlinx.coroutines.flow.Flow
 import kr.sjh.data.db.dao.TodoDao
 import kr.sjh.data.entity.TodoEntity
+import org.joda.time.DateTime
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -11,7 +13,7 @@ import javax.inject.Singleton
 class DefaultLocalDataSource @Inject constructor(
     private val todoDao: TodoDao
 ) : LocalDataSource {
-    override fun getAllDailyTodoListByFlow(date: Date): Flow<List<TodoEntity>> =
+    override fun getAllDailyTodoListByFlow(date: Long): Flow<List<TodoEntity>> =
         todoDao.getAllDailyTodoListByFlow(date)
 
     override suspend fun insertAllTodo(todoList: List<TodoEntity>) {
@@ -26,8 +28,13 @@ class DefaultLocalDataSource @Inject constructor(
         todoDao.deleteTodo(id)
     }
 
-    override suspend fun getAllTodoList(today: Boolean, date: Date): List<TodoEntity> {
+    override suspend fun getAllTodoList(today: Boolean, date: Long): List<TodoEntity> {
+        Log.i("sjh","$date")
         return todoDao.getAllTodoList(today, date)
+    }
+
+    override suspend fun updateTodo(todo: TodoEntity): Int {
+        return todoDao.updateTodo(todo)
     }
 
 }

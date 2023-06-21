@@ -75,4 +75,7 @@ dependencies {
     //navigation
     implementation(Libraries.AndroidX.ACTIVITY_KTX)
     implementation(Libraries.AndroidX.FRAGMENT_KTX)
+
+    implementation("joda-time:joda-time:2.12.5")
+
 }

@@ -17,7 +17,7 @@ import javax.inject.Singleton
 class TodoRepository @Inject constructor(private val localDataSource: LocalDataSource) :
     Repository {
 
-    override fun getAllDailyTodoListByFlow(date: Date): Flow<List<Todo>> {
+    override fun getAllDailyTodoListByFlow(date: Long): Flow<List<Todo>> {
         return localDataSource.getAllDailyTodoListByFlow(date).map {
             it.toTodoList()
         }
@@ -36,10 +36,14 @@ class TodoRepository @Inject constructor(private val localDataSource: LocalDataS
     }
 
 
-    override suspend fun getAllTodoList(today: Boolean, date: Date): List<Todo> {
+    override suspend fun getAllTodoList(today: Boolean, date: Long): List<Todo> {
         return localDataSource.getAllTodoList(today, date).map {
-            Todo(it.id, it.date, it.hour, it.minute, it.title, it.today, it.is_check)
+            Todo(it.id, it.date, it.title, it.today, it.is_check)
         }
+    }
+
+    override suspend fun updateTodo(todo: Todo): Int {
+        return localDataSource.updateTodo(todo.toTodoEntity())
     }
 
 

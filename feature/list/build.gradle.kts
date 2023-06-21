@@ -73,4 +73,6 @@ dependencies {
 
     // horizontalcalendar
     implementation(Libraries.CALENDAR)
+
+    implementation("joda-time:joda-time:2.12.5")
 }

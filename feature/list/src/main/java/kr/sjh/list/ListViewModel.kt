@@ -6,15 +6,17 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kr.sjh.domain.model.Item
 import kr.sjh.domain.model.ListViewType
 import kr.sjh.domain.model.Todo
 import kr.sjh.domain.usecase.list.*
+import kr.sjh.list.listener.ItemClickListener
+import org.joda.time.DateTime
+import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 
@@ -24,40 +26,43 @@ class ListViewModel @Inject constructor(
     private val insertAllTodoUseCase: InsertAllTodoUseCase,
     private val insertTodoUseCase: InsertTodoUseCase,
     private val deleteTodoUseCase: DeleteTodoUseCase,
-    private val getAllTodoListUseCase: GetAllTodoListUseCase
+    private val getAllTodoListUseCase: GetAllTodoListUseCase,
+    private val updateTodoUseCase: UpdateTodoUseCase
 ) :
-    ViewModel() {
+    ViewModel(), ItemClickListener {
 
-    private val _todoList = MutableStateFlow<List<Todo>>(emptyList())
+    private val _todoList = MutableStateFlow<List<Item>>(emptyList())
 
-    val todoList: StateFlow<List<Todo>> = _todoList
+    val todoList: StateFlow<List<Item>> = _todoList
 
     private val _openAdd = MutableSharedFlow<Boolean>()
 
     val openAdd = _openAdd.asSharedFlow()
 
     private val _todo = MutableSharedFlow<Todo>()
-    val todo: SharedFlow<Todo> = _todo.asSharedFlow()
 
+    val todo: SharedFlow<Todo> = _todo.asSharedFlow()
 
     init {
         viewModelScope.launch {
-            getAllTodoList(Date())
+            getAllTodoList(DateTime.now().toDate())
         }
     }
 
     private suspend fun getAllTodoList(date: Date) {
+
         coroutineScope {
+
             val today = withContext(Dispatchers.IO) {
+
                 getAllTodoListUseCase.invoke(
                     true,
-                    date
+                    date.time
                 ).map {
                     it.viewType = ListViewType.ITEM
                     it
                 }.toMutableList()
             }
-
 
             val tomorrow = withContext(Dispatchers.IO) {
                 val c = Calendar.getInstance()
@@ -65,7 +70,7 @@ class ListViewModel @Inject constructor(
                 c.add(Calendar.DATE, 1)
                 getAllTodoListUseCase.invoke(
                     false,
-                    c.time
+                    date.time
                 ).map {
                     it.viewType = ListViewType.ITEM_TOMORROW
                     it
@@ -74,41 +79,27 @@ class ListViewModel @Inject constructor(
 
             //today 헤더추가
             today.add(
-                0,
-                Todo(
-                    date = Date(),
-                    title = "",
-                    hour = 0,
-                    minute = 0,
-                    is_check = false,
-                    today = false,
-                    viewType = ListViewType.HEADER_TODAY
-                )
+            
             )
 
             //tomorrow 헤더추가
             tomorrow.add(
                 0,
                 Todo(
-                    date = Date(),
+                    date = DateTime(),
                     title = "",
-                    hour = 0,
-                    minute = 0,
                     is_check = false,
                     today = false,
                     viewType = ListViewType.HEADER_TOMMOROW
                 )
             )
-            Log.i("sjh", "today: ${today.size}")
 
             //아이템이 없는경우 뷰타입 EMPTY
             if (today.size <= 1) {
                 today.add(
                     Todo(
-                        date = Date(),
+                        date = DateTime(),
                         title = "",
-                        hour = 0,
-                        minute = 0,
                         is_check = false,
                         today = false,
                         viewType = ListViewType.EMPTY
@@ -119,10 +110,8 @@ class ListViewModel @Inject constructor(
             if (tomorrow.size <= 1) {
                 tomorrow.add(
                     Todo(
-                        date = Date(),
+                        date = DateTime(),
                         title = "",
-                        hour = 0,
-                        minute = 0,
                         is_check = false,
                         today = false,
                         viewType = ListViewType.EMPTY
@@ -157,7 +146,13 @@ class ListViewModel @Inject constructor(
         }
     }
 
-    fun onItemClick(view: View, todo: Todo) {
+    override fun onItemClick(todo: Todo, isClick: Boolean) {
+        viewModelScope.launch {
+            todo.is_check = isClick
+            if (isClick) {
+                updateTodoUseCase.invoke(todo)
+            }
+        }
 
     }
 

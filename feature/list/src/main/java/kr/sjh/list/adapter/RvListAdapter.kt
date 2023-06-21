@@ -1,21 +1,26 @@
 package kr.sjh.list.adapter
 
-import android.util.Log
+import android.annotation.SuppressLint
+import android.graphics.Color
+import android.graphics.Paint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import kr.sjh.domain.model.Item
 import kr.sjh.domain.model.ListViewType.EMPTY
 import kr.sjh.domain.model.ListViewType.HEADER_TODAY
 import kr.sjh.domain.model.ListViewType.HEADER_TOMMOROW
 import kr.sjh.domain.model.ListViewType.ITEM
 import kr.sjh.domain.model.ListViewType.ITEM_TOMORROW
 import kr.sjh.domain.model.Todo
+import kr.sjh.list.ListViewModel
 import kr.sjh.list.databinding.*
 import kr.sjh.list.listener.ItemClickListener
 
-class RvListAdapter : ListAdapter<Todo, RecyclerView.ViewHolder>(ItemDiffUtil), ItemClickListener {
+class RvListAdapter(private val listener: ItemClickListener) :
+    ListAdapter<Item, RecyclerView.ViewHolder>(ItemDiffUtil) {
 
     init {
         setHasStableIds(true)
@@ -87,10 +92,7 @@ class RvListAdapter : ListAdapter<Todo, RecyclerView.ViewHolder>(ItemDiffUtil), 
             }
             is TodoListEmptyHeaderViewHolder -> {}
         }
-    }
 
-    override fun onItemClick(todo: Todo, isCheck: Boolean) {
-        Log.i("sjh", "id : ${todo.id} isCheck : $isCheck")
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -104,9 +106,27 @@ class RvListAdapter : ListAdapter<Todo, RecyclerView.ViewHolder>(ItemDiffUtil), 
 
     inner class TodoListItemViewHolder(private val binding: RecyclerviewTodoListItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(todo: Todo) {
-            binding.todo = todo
-            binding.listener = this@RvListAdapter
+        fun bind(todo: Item) = with(binding) {
+            when (todo) {
+                is Todo -> {
+                    this.todo = todo
+                    val item = tvItemList
+                    cbCheck.setOnCheckedChangeListener { buttonView, isChecked ->
+                        if (isChecked) {
+                            item.paintFlags =
+                                item.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+                            item.setTextColor(Color.GRAY)
+                        } else {
+                            item.paintFlags =
+                                item.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
+                            item.setTextColor(Color.BLACK)
+                        }
+                        listener.onItemClick(todo, isChecked)
+                    }
+                }
+            }
+
+            executePendingBindings()
         }
     }
 
@@ -124,19 +144,22 @@ class RvListAdapter : ListAdapter<Todo, RecyclerView.ViewHolder>(ItemDiffUtil), 
 
     inner class TodoListTomorrowItemViewHolder(private val binding: RecyclerviewTodoListTomorrowItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(todo: Todo) {
-            binding.todo = todo
+        fun bind(todo: Item) {
+            when (todo) {
+                is Todo -> binding.todo = todo
+            }
         }
     }
 }
 
-object ItemDiffUtil : DiffUtil.ItemCallback<Todo>() {
+object ItemDiffUtil : DiffUtil.ItemCallback<Item>() {
 
-    override fun areItemsTheSame(oldItem: Todo, newItem: Todo): Boolean {
+    override fun areItemsTheSame(oldItem: Item, newItem: Item): Boolean {
         return oldItem.id == newItem.id
     }
 
-    override fun areContentsTheSame(oldItem: Todo, newItem: Todo): Boolean {
+    @SuppressLint("DiffUtilEquals")
+    override fun areContentsTheSame(oldItem: Item, newItem: Item): Boolean {
         return oldItem == newItem
     }
 }

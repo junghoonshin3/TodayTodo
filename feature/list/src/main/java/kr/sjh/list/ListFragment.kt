@@ -2,6 +2,7 @@ package kr.sjh.list
 
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,10 +15,12 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kizitonwose.calendar.core.*
 import dagger.hilt.android.AndroidEntryPoint
+import kr.sjh.domain.model.Todo
 import kr.sjh.list.adapter.ListDividerItemDeco
 import kr.sjh.list.adapter.RvListAdapter
 import kr.sjh.list.databinding.FragmentListBinding
 import kr.sjh.list.dialog.AddDialogFragment
+import kr.sjh.list.listener.ItemClickListener
 import java.util.*
 
 @AndroidEntryPoint
@@ -47,8 +50,7 @@ class ListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentListBinding.bind(view)
         binding.vmList = list
-        rvAdapter = RvListAdapter()
-
+        rvAdapter = RvListAdapter(list)
         binding.rvTodoList.apply {
             addItemDecoration(ListDividerItemDeco())
             addItemDecoration(
@@ -59,7 +61,6 @@ class ListFragment : Fragment() {
             )
             layoutManager = LinearLayoutManager(requireContext())
             adapter = rvAdapter
-
         }
 
         addDialogFragment = AddDialogFragment(Calendar.getInstance())

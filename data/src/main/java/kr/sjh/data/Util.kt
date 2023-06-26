@@ -8,7 +8,7 @@ import kr.sjh.domain.model.Todo
 @RequiresApi(Build.VERSION_CODES.O)
 fun List<TodoEntity>.toTodoList(): List<Todo> {
     return this.map {
-        Todo(it.id, it.date, it.title, it.today, it.is_check)
+        Todo(it.id,it.date, it.title, it.today, it.is_check)
     }
 }
 

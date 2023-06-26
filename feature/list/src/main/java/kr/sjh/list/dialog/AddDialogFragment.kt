@@ -14,6 +14,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.cancel
 import kr.sjh.list.ListViewModel
 import kr.sjh.list.R
 import kr.sjh.list.databinding.FragmentDialogAddBinding
@@ -23,7 +24,7 @@ import java.util.*
 
 
 @AndroidEntryPoint
-class AddDialogFragment(private var c: Calendar) : BottomSheetDialogFragment() {
+class AddDialogFragment : BottomSheetDialogFragment() {
 
     private val add: AddViewModel by viewModels(ownerProducer = { requireActivity() })
 
@@ -38,17 +39,20 @@ class AddDialogFragment(private var c: Calendar) : BottomSheetDialogFragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_dialog_add, container, false)
+    ): View {
+        binding = FragmentDialogAddBinding.inflate(inflater, container, false)
+        binding.lifecycleOwner = viewLifecycleOwner
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding = FragmentDialogAddBinding.bind(view)
-        binding.add = add
-        binding.list = list
+        binding.apply {
+            add = this@AddDialogFragment.add
+            list = this@AddDialogFragment.list
+        }
 
-        timePickerDialog = AddTimePicker.newInstance(c)
+        timePickerDialog = AddTimePicker()
 
         observeData()
 
@@ -56,44 +60,14 @@ class AddDialogFragment(private var c: Calendar) : BottomSheetDialogFragment() {
 
     private fun observeData() {
         lifecycleScope.launchWhenStarted {
-            add.isHourOpen.collect {
-                if (it && !timePickerDialog.isAdded) {
+            add.timePickerOpen.collect {
+                if (it) {
                     timePickerDialog.show(childFragmentManager, "timepicker")
-                } else if (!it && timePickerDialog.isAdded) {
+                } else {
                     timePickerDialog.dismiss()
                 }
             }
         }
-
-        lifecycleScope.launchWhenStarted {
-            add._confirm.collect {
-                if (it) {
-                    binding.tvSelectTime.text =
-                        String.format("%02d:%02d", add.hour.value, add.minute.value)
-                }
-            }
-        }
-        lifecycleScope.launchWhenStarted {
-            add.save.collect {
-                list.update()
-                view?.let { it1 -> list.close(it1) }
-            }
-        }
-
-        lifecycleScope.launchWhenStarted {
-            add.isEmptyName.collect {
-                if (it) {
-
-                    Snackbar.make(
-                        requireView().rootView,
-                        "이름을 입력해주세요",
-                        Snackbar.LENGTH_LONG
-                    ).show()
-                }
-
-            }
-        }
-
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -119,14 +93,9 @@ class AddDialogFragment(private var c: Calendar) : BottomSheetDialogFragment() {
         bottomSheet.layoutParams = layoutParams
     }
 
-    fun updateTimeNow() {
-        this.c = Calendar.getInstance()
-    }
-
     override fun onDismiss(dialog: DialogInterface) {
         binding.tieName.text?.clear()
         super.onDismiss(dialog)
-
     }
 
 

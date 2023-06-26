@@ -1,25 +1,27 @@
 package kr.sjh.list
 
+import android.os.Build
 import android.util.Log
 import android.view.View
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.*
-import kr.sjh.domain.model.Item
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kr.sjh.domain.model.ListViewType
 import kr.sjh.domain.model.Todo
 import kr.sjh.domain.usecase.list.*
 import kr.sjh.list.listener.ItemClickListener
 import org.joda.time.DateTime
-import java.text.SimpleDateFormat
+import java.time.format.DateTimeFormatter
 import java.util.*
 import javax.inject.Inject
 
+@RequiresApi(Build.VERSION_CODES.O)
 @HiltViewModel
 class ListViewModel @Inject constructor(
     private val getTodoListUseCase: GetAllDailyTodoListUseCase,
@@ -31,9 +33,19 @@ class ListViewModel @Inject constructor(
 ) :
     ViewModel(), ItemClickListener {
 
-    private val _todoList = MutableStateFlow<List<Item>>(emptyList())
+    private val _todoList = MutableStateFlow<List<Todo>>(emptyList())
 
-    val todoList: StateFlow<List<Item>> = _todoList
+    val today = Calendar.getInstance().run {
+        set(Calendar.MILLISECOND, 0)
+        set(Calendar.SECOND, 0)
+        set(Calendar.MINUTE, 0)
+        set(Calendar.HOUR_OF_DAY, 0)
+        time
+    }
+    val todoList: StateFlow<List<Todo>> =
+        getAllTodoListUseCase.invoke(today.time).flowOn(Dispatchers.IO).stateIn(
+            viewModelScope, SharingStarted.WhileSubscribed(5000), initialValue = emptyList()
+        )
 
     private val _openAdd = MutableSharedFlow<Boolean>()
 
@@ -43,88 +55,44 @@ class ListViewModel @Inject constructor(
 
     val todo: SharedFlow<Todo> = _todo.asSharedFlow()
 
+    private val _isEmptyName = MutableSharedFlow<Boolean>()
+
+    val isEmptyName = _isEmptyName.asSharedFlow()
+
     init {
-        viewModelScope.launch {
-            getAllTodoList(DateTime.now().toDate())
+//        viewModelScope.launch {
+//            val today = Calendar.getInstance()
+//            today[Calendar.MILLISECOND] = 0
+//            today[Calendar.SECOND] = 0
+//            today[Calendar.MINUTE] = 0
+//            today[Calendar.HOUR_OF_DAY] = 0
+//        }
+    }
+
+    fun getAllTodoList(date: Long) {
+        viewModelScope.launch(Dispatchers.IO) {
+            getAllTodoListUseCase.invoke(date)
         }
     }
 
-    private suspend fun getAllTodoList(date: Date) {
-
-        coroutineScope {
-
-            val today = withContext(Dispatchers.IO) {
-
-                getAllTodoListUseCase.invoke(
-                    true,
-                    date.time
-                ).map {
-                    it.viewType = ListViewType.ITEM
-                    it
-                }.toMutableList()
+    fun save(v: View, name: String, today: Boolean) {
+        viewModelScope.launch {
+            if (name.isEmpty()) {
+                _isEmptyName.emit(true)
+                return@launch
             }
-
-            val tomorrow = withContext(Dispatchers.IO) {
-                val c = Calendar.getInstance()
-                c.time = date
-                c.add(Calendar.DATE, 1)
-                getAllTodoListUseCase.invoke(
-                    false,
-                    date.time
-                ).map {
-                    it.viewType = ListViewType.ITEM_TOMORROW
-                    it
-                }.toMutableList()
-            }
-
-            //today 헤더추가
-            today.add(
-            
-            )
-
-            //tomorrow 헤더추가
-            tomorrow.add(
-                0,
+            var dateTime = DateTime.now()
+            insertTodoUseCase.invoke(
                 Todo(
-                    date = DateTime(),
-                    title = "",
-                    is_check = false,
-                    today = false,
-                    viewType = ListViewType.HEADER_TOMMOROW
+                    date = dateTime,
+                    title = name,
+                    today = today,
                 )
             )
 
-            //아이템이 없는경우 뷰타입 EMPTY
-            if (today.size <= 1) {
-                today.add(
-                    Todo(
-                        date = DateTime(),
-                        title = "",
-                        is_check = false,
-                        today = false,
-                        viewType = ListViewType.EMPTY
-                    )
-                )
-            }
+            getAllTodoList(dateTime.toDate().time)
 
-            if (tomorrow.size <= 1) {
-                tomorrow.add(
-                    Todo(
-                        date = DateTime(),
-                        title = "",
-                        is_check = false,
-                        today = false,
-                        viewType = ListViewType.EMPTY
-                    )
-                )
-            }
-
-
-            //헤더 추가후 배열 addAll
-            today.addAll(tomorrow)
-
-            _todoList.value = today
-
+            dismiss()
         }
     }
 
@@ -134,15 +102,9 @@ class ListViewModel @Inject constructor(
         }
     }
 
-    fun close(v: View) {
+    fun dismiss() {
         viewModelScope.launch {
             _openAdd.emit(false)
-        }
-    }
-
-    fun update() {
-        viewModelScope.launch {
-            getAllTodoList(Date())
         }
     }
 

@@ -36,9 +36,9 @@ class TodoRepository @Inject constructor(private val localDataSource: LocalDataS
     }
 
 
-    override suspend fun getAllTodoList(today: Boolean, date: Long): List<Todo> {
-        return localDataSource.getAllTodoList(today, date).map {
-            Todo(it.id, it.date, it.title, it.today, it.is_check)
+    override fun getAllTodoList(date: Long): Flow<List<Todo>> {
+        return localDataSource.getAllTodoList(date).map {
+            it.toTodoList()
         }
     }
 

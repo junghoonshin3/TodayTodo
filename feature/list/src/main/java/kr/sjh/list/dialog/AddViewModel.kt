@@ -15,6 +15,8 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kr.sjh.domain.model.Todo
 import kr.sjh.domain.usecase.list.InsertTodoUseCase
+import org.joda.time.DateTime
+import org.joda.time.DateTimeFieldType
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.util.*
@@ -26,94 +28,54 @@ class AddViewModel @Inject constructor(
 ) : ViewModel() {
 
 
-    private val _save = MutableSharedFlow<Boolean>()
+    private val _timePickerOpen = MutableSharedFlow<Boolean>()
 
-    val save = _save.asSharedFlow()
-
-    private val _isHourOpen = MutableSharedFlow<Boolean>()
-
-    val isHourOpen = _isHourOpen.asSharedFlow()
+    val timePickerOpen = _timePickerOpen.asSharedFlow()
 
     val _name = MutableStateFlow("")
 
     var _today = MutableStateFlow(true)
 
-    private val cal = Calendar.getInstance()
+    var dateTime = DateTime.now()
 
-    var selectHour = 0
+    private val _hourOfDay = MutableStateFlow(dateTime.hourOfDay().get())
 
-    var selectMinute = 0
+    val hourOfDay = _hourOfDay.asStateFlow()
 
-    private val _hour = MutableStateFlow(cal.get(Calendar.HOUR_OF_DAY))
-
-    val hour = _hour.asStateFlow()
-
-    private val _minute = MutableStateFlow(cal.get(Calendar.MINUTE))
+    private val _minute = MutableStateFlow(dateTime.minuteOfHour().get())
 
     val minute = _minute.asStateFlow()
 
-    val _confirm = MutableStateFlow(false)
+    var tempHour = 0
 
-    private val _isEmptyName = MutableSharedFlow<Boolean>()
+    var tempMinute = 0
 
-    val isEmptyName = _isEmptyName.asSharedFlow()
-
-    fun save(v: View) {
-
-        viewModelScope.launch {
-            if (_name.value.isNullOrEmpty()) {
-                _isEmptyName.emit(true)
-                return@launch
-            }
-            insertTodoUseCase.invoke(
-                Todo(
-                    date = cal.time,
-                    title = _name.value,
-                    today = _today.value,
-                    hour = _hour.value,
-                    minute = _minute.value
-                )
-            )
-            _save.emit(true)
-        }
-    }
-
-    fun today(compoundButton: CompoundButton, isChecked: Boolean) {
-        if (!isChecked) {
-            cal.add(Calendar.DATE, 1)
-        } else {
-            cal.time = Date()
-        }
-        _today.value = isChecked
-    }
-
-    fun isOpenTimePicker(v: View) {
-        viewModelScope.launch {
-            //시간저장
-            _isHourOpen.emit(true)
-        }
-    }
-
-    fun isCloseTimePicker(v: View) {
-        viewModelScope.launch {
-            _isHourOpen.emit(false)
-        }
-    }
 
     fun confirmTimePicker(v: View) {
         viewModelScope.launch {
-            _hour.emit(selectHour)
-            _minute.emit(selectMinute)
-            _isHourOpen.emit(false)
-            _confirm.emit(true)
+            _hourOfDay.emit(tempHour)
+            _minute.emit(tempMinute)
+            dateTime = dateTime.withHourOfDay(hourOfDay.value).withMinuteOfHour(minute.value)
+            _timePickerOpen.emit(false)
         }
     }
 
+    fun cancleTimePicker(v: View) {
+        viewModelScope.launch {
+            _timePickerOpen.emit(false)
+        }
+    }
 
     fun hour(v: TimePicker, hourOfDay: Int, minute: Int) {
+        tempHour = hourOfDay
+        tempMinute = minute
+    }
+
+    fun timePickerOpen(v: View) {
         viewModelScope.launch {
-            selectHour = hourOfDay
-            selectMinute = minute
+            //타임피커 오픈
+            Log.i("sjh", "timePickerOpen")
+            _timePickerOpen.emit(true)
         }
     }
 

@@ -13,7 +13,7 @@ interface LocalDataSource {
 
     suspend fun deleteTodo(id: Int)
 
-    suspend fun getAllTodoList(today: Boolean, date: Long): List<TodoEntity>
+    fun getAllTodoList(date: Long): Flow<List<TodoEntity>>
 
     suspend fun updateTodo(todo: TodoEntity): Int
 }

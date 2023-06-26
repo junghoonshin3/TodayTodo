@@ -1,7 +1,10 @@
 package kr.sjh.data.datasource.local
 
 import android.util.Log
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.flow
 import kr.sjh.data.db.dao.TodoDao
 import kr.sjh.data.entity.TodoEntity
 import org.joda.time.DateTime
@@ -28,9 +31,16 @@ class DefaultLocalDataSource @Inject constructor(
         todoDao.deleteTodo(id)
     }
 
-    override suspend fun getAllTodoList(today: Boolean, date: Long): List<TodoEntity> {
-        Log.i("sjh","$date")
-        return todoDao.getAllTodoList(today, date)
+    override fun getAllTodoList(date: Long): Flow<List<TodoEntity>> {
+        return callbackFlow {
+            val list = todoDao.getAllTodoList(date)
+            if (list.isEmpty()) {
+                send(emptyList())
+            } else {
+                send(list)
+            }
+            awaitClose()
+        }
     }
 
     override suspend fun updateTodo(todo: TodoEntity): Int {

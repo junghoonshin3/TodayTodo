@@ -7,8 +7,6 @@
             name="todo"
             type="kr.sjh.domain.model.Todo" />
 
-        <import type="kr.sjh.list.ExtensionsKt" />
-
         <variable
             name="listener"
             type="kr.sjh.list.listener.ItemClickListener" />
@@ -47,7 +45,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            android:text="@{ExtensionsKt.dateToString(todo)}"
             android:textColor="#A3A3A3"
             app:layout_constraintBottom_toBottomOf="@+id/cb_tomorrow_check"
             app:layout_constraintStart_toStartOf="@+id/tv_item_list"

@@ -23,20 +23,20 @@ class ListDividerItemDeco : RecyclerView.ItemDecoration() {
 
         when (viewType) {
             ListViewType.HEADER_TODAY -> {
-                outRect.left = 10f.dp2px
-                outRect.right = 10f.dp2px
-                outRect.bottom = 10f.dp2px
+                outRect.left = 5f.dp2px
+                outRect.right = 5f.dp2px
+                outRect.bottom = 5f.dp2px
             }
             ListViewType.HEADER_TOMMOROW -> {
-                outRect.left = 10f.dp2px
-                outRect.right = 10f.dp2px
-                outRect.bottom = 10f.dp2px
-                outRect.top = 10f.dp2px
+                outRect.left = 5f.dp2px
+                outRect.right = 5f.dp2px
+                outRect.bottom = 5f.dp2px
+                outRect.top = 5f.dp2px
             }
             ListViewType.ITEM, ListViewType.ITEM_TOMORROW -> {
-                outRect.left = 20f.dp2px
-                outRect.top = 5f.dp2px
-                outRect.bottom = 5f.dp2px
+                outRect.left = 5f.dp2px
+                outRect.top = 2f.dp2px
+                outRect.bottom = 2f.dp2px
             }
         }
 

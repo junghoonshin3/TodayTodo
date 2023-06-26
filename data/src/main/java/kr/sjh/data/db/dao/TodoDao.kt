@@ -20,7 +20,7 @@ interface TodoDao {
     suspend fun deleteTodo(id: Int)
 
     @Query("SELECT * FROM TodoEntity WHERE date >= :date")
-    suspend fun getAllTodoList(today: Boolean, date: Long): List<TodoEntity>
+    fun getAllTodoList(date: Long): List<TodoEntity>
 
     @Update
     suspend fun updateTodo(todo: TodoEntity): Int

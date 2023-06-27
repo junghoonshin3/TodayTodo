@@ -24,7 +24,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AddViewModel @Inject constructor(
-    private val insertTodoUseCase: InsertTodoUseCase
 ) : ViewModel() {
 
 
@@ -55,7 +54,12 @@ class AddViewModel @Inject constructor(
         viewModelScope.launch {
             _hourOfDay.emit(tempHour)
             _minute.emit(tempMinute)
-            dateTime = dateTime.withHourOfDay(hourOfDay.value).withMinuteOfHour(minute.value)
+            dateTime.apply {
+                withHourOfDay(this@AddViewModel.hourOfDay.value)
+                withMinuteOfHour(minute.value)
+//                if (!_today.value) minusDays(1)
+//                else plusDays(1)
+            }
             _timePickerOpen.emit(false)
         }
     }

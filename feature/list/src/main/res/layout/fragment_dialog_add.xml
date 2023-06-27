@@ -118,7 +118,7 @@
             android:layout_marginTop="62dp"
             android:layout_marginEnd="5dp"
             android:backgroundTint="@android:color/black"
-            android:onClick="@{(v)->list.save(v, add._name, add._today)}"
+            android:onClick="@{(v)->list.save(v, add._name, add._today, add.dateTime)}"
             app:cardCornerRadius="4dp"
             app:layout_constraintEnd_toStartOf="@+id/mcv_cancle"
             app:layout_constraintStart_toStartOf="@+id/tv_is_today"

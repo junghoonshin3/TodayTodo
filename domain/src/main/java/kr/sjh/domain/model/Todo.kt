@@ -8,5 +8,5 @@ data class Todo(
     val title: String,
     val today: Boolean,
     var is_check: Boolean = false,
-    var viewType: Int = ListViewType.ITEM
+    var viewType: Int = if (today) ListViewType.ITEM else ListViewType.ITEM_TOMORROW
 )

@@ -13,24 +13,32 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 @BindingAdapter("app:isComplete")
-fun TextView.isComplete(isChecked: Boolean) {
-    if (isChecked) {
-        paintFlags =
-            paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-        setTextColor(Color.GRAY)
-    } else {
-        paintFlags =
-            paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
-        setTextColor(Color.BLACK)
+fun isComplete(tv: TextView, isChecked: Boolean) {
+    tv.apply {
+        if (isChecked) {
+            paintFlags =
+                paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+            setTextColor(Color.GRAY)
+        } else {
+            paintFlags =
+                paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
+            setTextColor(Color.BLACK)
+        }
     }
+
 }
 
-@BindingAdapter("app:adapter", "app:submitList", "app:itemDeco", requireAll = true)
+@BindingAdapter(
+    "app:adapter",
+    "app:submitList",
+    "app:itemDeco",
+    requireAll = true
+)
 fun bindRecyclerView(
     rv: RecyclerView,
     adapter: RecyclerView.Adapter<*>,
     submitList: List<Any>?,
-    deco: RecyclerView.ItemDecoration?
+    deco: RecyclerView.ItemDecoration?,
 ) {
     rv.apply {
         this.adapter = adapter.apply {
@@ -38,7 +46,7 @@ fun bindRecyclerView(
             (this as ListAdapter<Any, *>).submitList(submitList?.toMutableList())
         }
         deco?.let {
-            addItemDecoration(it)
+//            addItemDecoration(it)
             addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
         }
     }

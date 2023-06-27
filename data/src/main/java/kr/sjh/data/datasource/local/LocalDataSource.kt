@@ -5,7 +5,6 @@ import kr.sjh.data.entity.TodoEntity
 import org.joda.time.DateTime
 
 interface LocalDataSource {
-    fun getAllDailyTodoListByFlow(date: Long): Flow<List<TodoEntity>>
 
     suspend fun insertAllTodo(todoList: List<TodoEntity>)
 

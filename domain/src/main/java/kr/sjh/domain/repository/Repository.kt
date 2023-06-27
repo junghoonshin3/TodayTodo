@@ -4,7 +4,6 @@ import kotlinx.coroutines.flow.Flow
 import kr.sjh.domain.model.Todo
 
 interface Repository {
-    fun getAllDailyTodoListByFlow(date: Long): Flow<List<Todo>>
 
     suspend fun insertAllTodo(list: List<Todo>)
 

@@ -5,20 +5,33 @@
 
     <data>
 
+        <import type="androidx.databinding.ObservableField" />
+
         <variable
             name="todo"
             type="kr.sjh.domain.model.Todo" />
+
+        <variable
+            name="listener"
+            type="kr.sjh.list.listener.ItemClickListener" />
+
+        <variable
+            name="isChecked"
+            type="androidx.databinding.ObservableField&lt;Boolean>"
+            android:value="@{todo._check}" />
+
 
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:onClick="@{(v)->listener.onItemClick(todo)}">
 
         <androidx.appcompat.widget.AppCompatCheckBox
             android:id="@+id/cb_check"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:background="@drawable/custom_checkbox"
             android:button="@android:color/transparent"
             android:checked="@={todo._check}"
@@ -32,10 +45,11 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="15dp"
             android:text="@{todo.title}"
-            app:isComplete="@{todo._check}"
             android:textColor="#000000"
+            app:isComplete="@{isChecked}"
             app:layout_constraintBottom_toTopOf="@+id/tv_item_time"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/cb_check"
             app:layout_constraintTop_toTopOf="@+id/cb_check"
             app:layout_constraintVertical_chainStyle="packed" />
@@ -45,6 +59,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
+            android:text="@{todo.date.toString(`yyyy-MM-dd HH:mm:ss`)}"
             android:textColor="#A3A3A3"
             app:layout_constraintBottom_toBottomOf="@+id/cb_check"
             app:layout_constraintStart_toStartOf="@+id/tv_item_list"

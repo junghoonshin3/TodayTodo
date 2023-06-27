@@ -3,8 +3,10 @@ package kr.sjh.list.adapter
 import android.annotation.SuppressLint
 import android.graphics.Color
 import android.graphics.Paint
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.databinding.ObservableField
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -21,9 +23,6 @@ import kr.sjh.list.listener.ItemClickListener
 class RvListAdapter(private val listener: ItemClickListener) :
     ListAdapter<Todo, RecyclerView.ViewHolder>(ItemDiffUtil) {
 
-    init {
-        setHasStableIds(true)
-    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
@@ -105,21 +104,18 @@ class RvListAdapter(private val listener: ItemClickListener) :
 
     inner class TodoListItemViewHolder(private val binding: RecyclerviewTodoListItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
+
+        private val _isChecked = ObservableField<Boolean>()
+
         fun bind(todo: Todo) = with(binding) {
-            this.todo = todo
-            val item = tvItemList
+            this@with.todo = todo
+            listener = this@RvListAdapter.listener
+            isChecked = _isChecked
             cbCheck.setOnCheckedChangeListener { buttonView, isChecked ->
-                if (isChecked) {
-                    item.paintFlags =
-                        item.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-                    item.setTextColor(Color.GRAY)
-                } else {
-                    item.paintFlags =
-                        item.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
-                    item.setTextColor(Color.BLACK)
-                }
-                listener.onItemClick(todo, isChecked)
+                Log.i("sjh","isChecked : $isChecked")
+                _isChecked.set(isChecked)
             }
+
             executePendingBindings()
         }
     }
@@ -148,7 +144,7 @@ class RvListAdapter(private val listener: ItemClickListener) :
 object ItemDiffUtil : DiffUtil.ItemCallback<Todo>() {
 
     override fun areItemsTheSame(oldItem: Todo, newItem: Todo): Boolean {
-        return oldItem.id == newItem.id
+        return oldItem == newItem
     }
 
     @SuppressLint("DiffUtilEquals")

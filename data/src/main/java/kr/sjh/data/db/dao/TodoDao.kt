@@ -13,9 +13,6 @@ interface TodoDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTodo(todoEntity: TodoEntity)
 
-    @Query("SELECT * FROM TodoEntity WHERE date = :date")
-    fun getAllDailyTodoListByFlow(date: Long): Flow<List<TodoEntity>>
-
     @Query("DELETE FROM TodoEntity WHERE id = :id")
     suspend fun deleteTodo(id: Int)
 

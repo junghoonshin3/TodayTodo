@@ -1,10 +1,12 @@
 package kr.sjh.data.datasource.local
 
 import android.util.Log
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import kr.sjh.data.db.dao.TodoDao
 import kr.sjh.data.entity.TodoEntity
 import org.joda.time.DateTime
@@ -16,9 +18,6 @@ import javax.inject.Singleton
 class DefaultLocalDataSource @Inject constructor(
     private val todoDao: TodoDao
 ) : LocalDataSource {
-    override fun getAllDailyTodoListByFlow(date: Long): Flow<List<TodoEntity>> =
-        todoDao.getAllDailyTodoListByFlow(date)
-
     override suspend fun insertAllTodo(todoList: List<TodoEntity>) {
         todoDao.insertAllTodo(todoList)
     }
@@ -32,15 +31,17 @@ class DefaultLocalDataSource @Inject constructor(
     }
 
     override fun getAllTodoList(date: Long): Flow<List<TodoEntity>> {
-        return callbackFlow {
+
+        //flow와 callbackFlow의 차이점?
+
+        return flow {
             val list = todoDao.getAllTodoList(date)
             if (list.isEmpty()) {
-                send(emptyList())
+                emit(emptyList())
             } else {
-                send(list)
+                emit(list)
             }
-            awaitClose()
-        }
+        }.flowOn(Dispatchers.IO)
     }
 
     override suspend fun updateTodo(todo: TodoEntity): Int {

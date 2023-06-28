@@ -6,6 +6,7 @@ import android.graphics.Paint
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.databinding.ObservableField
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -105,18 +106,35 @@ class RvListAdapter(private val listener: ItemClickListener) :
     inner class TodoListItemViewHolder(private val binding: RecyclerviewTodoListItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        private val _isChecked = ObservableField<Boolean>()
+        fun bind(todo: Todo) {
+            binding.todo = todo
+            binding.listener = listener
+            binding.cbCheck.apply {
+                //마음에안드네.. databinding 으로 해결가능한데 현재 databinding 시 observablefild를 사용할수없어서 문제..
 
-        fun bind(todo: Todo) = with(binding) {
-            this@with.todo = todo
-            listener = this@RvListAdapter.listener
-            isChecked = _isChecked
-            cbCheck.setOnCheckedChangeListener { buttonView, isChecked ->
-                Log.i("sjh","isChecked : $isChecked")
-                _isChecked.set(isChecked)
+                isChecked = todo.is_check
+                complete(todo.is_check, binding.tvItemList)
+
+                setOnCheckedChangeListener { buttonView, isChecked ->
+                    todo.is_check = isChecked
+                    listener.onCheckBoxClick(todo, isChecked)
+                    complete(isChecked, binding.tvItemList)
+                }
             }
+        }
 
-            executePendingBindings()
+        fun complete(isChecked: Boolean, tv: TextView) {
+            with(tv) {
+                if (isChecked) {
+                    paintFlags =
+                        paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+                    setTextColor(Color.GRAY)
+                } else {
+                    paintFlags =
+                        paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
+                    setTextColor(Color.BLACK)
+                }
+            }
         }
     }
 

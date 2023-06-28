@@ -35,15 +35,9 @@ class AddViewModel @Inject constructor(
 
     var _today = MutableStateFlow(true)
 
-    var dateTime = DateTime.now()
+    private val _dateTime = MutableStateFlow(DateTime.now())
 
-    private val _hourOfDay = MutableStateFlow(dateTime.hourOfDay().get())
-
-    val hourOfDay = _hourOfDay.asStateFlow()
-
-    private val _minute = MutableStateFlow(dateTime.minuteOfHour().get())
-
-    val minute = _minute.asStateFlow()
+    val dateTime = _dateTime.asStateFlow()
 
     var tempHour = 0
 
@@ -52,17 +46,26 @@ class AddViewModel @Inject constructor(
 
     fun confirmTimePicker(v: View) {
         viewModelScope.launch {
-            _hourOfDay.emit(tempHour)
-            _minute.emit(tempMinute)
-            dateTime.apply {
-                withHourOfDay(this@AddViewModel.hourOfDay.value)
-                withMinuteOfHour(minute.value)
-//                if (!_today.value) minusDays(1)
-//                else plusDays(1)
-            }
+            _dateTime.emit(
+                _dateTime.value.withHourOfDay(tempHour).withMinuteOfHour(tempMinute)
+            )
             _timePickerOpen.emit(false)
         }
     }
+
+    fun changeToday(isChecked: Boolean) {
+        viewModelScope.launch {
+            if (!isChecked) {
+                _dateTime.emit(_dateTime.value.plusDays(1))
+            } else {
+                //오늘날짜
+                _dateTime.emit(currentDateTime(tempHour, tempMinute))
+            }
+        }
+    }
+
+    private fun currentDateTime(tempHour: Int, tempMinute: Int) =
+        DateTime.now().withHourOfDay(tempHour).withMinuteOfHour(tempMinute)
 
     fun cancleTimePicker(v: View) {
         viewModelScope.launch {

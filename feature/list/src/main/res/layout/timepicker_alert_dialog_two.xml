@@ -17,14 +17,14 @@
             android:id="@+id/tp_time_spinner"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hour="@{shared_add.hourOfDay}"
+            android:hour="@{shared_add.dateTime.hourOfDay}"
             android:onTimeChanged="@{shared_add::hour}"
             android:theme="@style/TimePickerTheme"
             android:timePickerMode="spinner"
             app:layout_constraintBottom_toTopOf="@+id/v_line"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:minute="@{shared_add.minute}" />
+            app:minute="@{shared_add.dateTime.minuteOfHour}" />
 
         <View
             android:id="@+id/v_line"

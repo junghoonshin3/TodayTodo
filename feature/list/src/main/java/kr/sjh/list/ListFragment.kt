@@ -51,7 +51,7 @@ class ListFragment : BaseFragment<FragmentListBinding>(R.layout.fragment_list) {
     private fun observeData() {
         lifecycleScope.launchWhenStarted {
             list.openAdd.collect {
-                if (it) {
+                if (it && !dialog.isAdded) {
                     dialog.show(childFragmentManager, "addDialog")
                 } else {
                     dialog.dismiss()

@@ -10,11 +10,8 @@ import androidx.databinding.ObservableField
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import kr.sjh.domain.model.ListViewType
 import kr.sjh.domain.model.Todo
 import kr.sjh.domain.usecase.list.*
@@ -72,7 +69,6 @@ class ListViewModel @Inject constructor(
     }
 
     fun save(v: View, name: String, today: Boolean, date: DateTime) {
-        Log.i("sjh", "$name, $today")
         viewModelScope.launch {
             if (name.isEmpty()) {
                 _isEmptyName.emit(true)
@@ -109,7 +105,12 @@ class ListViewModel @Inject constructor(
             _todo.emit(todo)
 
         }
+    }
 
+    override fun onCheckBoxClick(todo: Todo, isCheck: Boolean) {
+        viewModelScope.launch {
+            updateTodoUseCase.invoke(todo)
+        }
     }
 
 

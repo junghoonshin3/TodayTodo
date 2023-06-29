@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
     <application
         android:name=".TodoApp"
         android:allowBackup="true"
@@ -12,6 +15,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TodayTodo"
         tools:targetApi="31">
+        <receiver android:name="kr.sjh.main.receiver.TodoAlarmReceiver" />
         <activity
             android:name="kr.sjh.main.MainActivity"
             android:exported="true">
@@ -20,6 +24,8 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+
         </activity>
     </application>
 
